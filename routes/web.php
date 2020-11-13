@@ -11,7 +11,7 @@
 |
 */
 
-Route::view('/', 'welcome');
+Route::get('/', 'PageController@welcome');
 
 Auth::routes();
 

@@ -34,9 +34,7 @@
           {{-- Left Side Of Navbar --}}
           <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             @guest
-              <li class="nav-item">
-                <a class="nav-link" href="{{ url('/') }}">Welcome</a>
-              </li>
+              
             @else
               <button class="btn btn-success">{{ Auth::user()->role }}</button>
             @endguest
@@ -58,6 +56,9 @@
                   {{ Auth::user()->name }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{ url(Auth::user()->role.'/profile') }}">
+                    Profile
+                  </a>
                   <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Logout
                   </a>
