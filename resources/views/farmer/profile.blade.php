@@ -6,7 +6,7 @@
       <div class="col-md-6 offset-md-3">
         @component('components.card')
           @slot('header')
-            admin profile
+            farmer profile
           @endslot
 
           Nama : {{ Auth::user()->name }}
