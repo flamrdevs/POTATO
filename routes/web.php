@@ -11,7 +11,9 @@
 |
 */
 
-Route::redirect('/', '/login');
+Route::view('/', 'welcome');
+
+Route::view('/design', 'design');
 
 // Auth
 Route::get('login', 'AuthController@showLoginForm')->name('login');
@@ -27,31 +29,28 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/', 'AdminController@index')->name('admin');
     Route::get('/profile', 'AdminController@profile');
 
-    // Farmer
-    Route::group(['prefix' => 'farmer'], function () {
-        Route::get('/', 'AdminController@farmer_index');
-        Route::get('/create', 'AdminController@farmer_create');
-        Route::post('/store', 'AdminController@farmer_store')->name('farmer.store');
-        Route::get('/show', 'AdminController@farmer_show');
-        Route::get('/edit', 'AdminController@farmer_edit');
-        Route::post('/update', 'AdminController@farmer_update');
-        Route::post('/destroy', 'AdminController@farmer_destroy');
+    Route::name('admin.')->group(function() {
+        Route::name('farmer.')->group(function() {
+            // Farmer
+            Route::group(['prefix' => 'farmer'], function () {
+                Route::get('/', 'AdminController@farmer_index')->name('index');
+                Route::get('/create', 'AdminController@farmer_create')->name('create');
+                Route::post('/store', 'AdminController@farmer_store')->name('store');
+                Route::get('/show', 'AdminController@farmer_show')->name('show');
+            });
+        });
+
+        // Farming
+        Route::group(['prefix' => 'farming'], function () {
+            Route::get('/', 'AdminController@farming_index');
+            Route::get('/create', 'AdminController@farming_create');
+            Route::post('/store', 'AdminController@farming_store');
+            Route::get('/show', 'AdminController@farming_show');
+        });
+        
+        // Weather
+        Route::get('/weather', 'AdminController@weather_index');
     });
-
-    // Farming
-    Route::group(['prefix' => 'farming'], function () {
-        Route::get('/', 'AdminController@farming_index');
-        Route::get('/create', 'AdminController@farming_create');
-        Route::post('/store', 'AdminController@farming_store');
-        Route::get('/show', 'AdminController@farming_show');
-        Route::get('/edit', 'AdminController@farming_edit');
-        Route::post('/update', 'AdminController@farming_update');
-        Route::post('/destroy', 'AdminController@farming_destroy');
-    });
-
-    // Weather
-    Route::get('/weather', 'AdminController@weather_index');
-
 });
 
 // Farmer Dashboard
@@ -60,13 +59,14 @@ Route::group(['prefix' => 'farmer'], function () {
     Route::get('/', 'FarmerController@index')->name('farmer');
     Route::get('/profile', 'FarmerController@profile');
 
-    // Farming
-    Route::group(['prefix' => 'farming'], function () {
-        Route::get('/', 'FarmerController@farming_index');
-        Route::get('/show', 'FarmerController@farming_show');
+    Route::name('farmer.')->group(function() {
+        // Farming
+        Route::group(['prefix' => 'farming'], function () {
+            Route::get('/', 'FarmerController@farming_index');
+            Route::get('/show', 'FarmerController@farming_show');
+        });
+
+        // Weather
+        Route::get('/weather', 'FarmerController@weather_index');
     });
-
-    // Weather
-    Route::get('/weather', 'FarmerController@weather_index');
-
 });

@@ -41,8 +41,9 @@ class AdminController extends Controller
     }
 
     public function farmer_store(Request $request)
-    {
-        if ($this->validateCreateFarmer($request)) {
+    {   
+        $validator = $this->validateCreateFarmer($request);
+        if ($validator->fails()) {
             return redirect()->route('admin.farmer.create')->withErrors($validator)->withInput($request->except('password_confirmation'));
         }
 
@@ -62,7 +63,7 @@ class AdminController extends Controller
 
     private function validateCreateFarmer($request)
     {
-        $validator = Validator::make($request->all(), [
+        return Validator::make($request->all(), [
             'name' => 'required|min:3|max:50',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
@@ -75,8 +76,6 @@ class AdminController extends Controller
             'password_confirmation.required' => 'Konfirmasi password harus di isi',
             'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
         ]);
-
-        return $validate->fails();
     }
 
     private function attemptCreateFarmer($request)

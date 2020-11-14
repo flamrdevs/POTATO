@@ -1,4 +1,4 @@
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('content')
   <div class="container mt-4">
@@ -41,26 +41,14 @@
               @endif
             </div>
 
-            {{-- <div class="form-group">
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                <label class="form-check-label" for="remember">
-                  Remember Me
-                </label>
-              </div>
-            </div> --}}
-
             <div class="form-group">
               <button type="submit" class="btn btn-primary">
                 Login
               </button>
-              {{-- <a class="btn btn-link" href="{{ route('password.request') }}">
-                Forgot Your Password?
-              </a> --}}
             </div>
           </form>
         @endcomponent
       </div>
     </div>
   </div>
-@endsection
+@endsection --}}

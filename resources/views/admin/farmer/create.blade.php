@@ -9,7 +9,7 @@
             Tambah akun petani
           @endslot
 
-          <form action="{{ route('farmer.store') }}" method="POST">
+          <form action="{{ route('admin.farmer.store') }}" method="POST">
             {{ csrf_field() }}
 
             <div class="form-group">
