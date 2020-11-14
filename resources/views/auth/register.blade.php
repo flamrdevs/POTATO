@@ -13,8 +13,8 @@
             {{ csrf_field() }}
 
             <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" id="name" name="name" value="{{ old('name') }}" aria-describedby="nameFeedback" required autofocus>
+              <label for="name">Nama</label>
+              <input type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" id="name" name="name" value="{{ old('name') }}" aria-describedby="nameFeedback" autofocus>
               @if ($errors->has('name'))
                 <div id="nameFeedback" class="invalid-feedback">
                   <strong>{{ $errors->first('name') }}</strong>
@@ -24,7 +24,7 @@
 
             <div class="form-group">
               <label for="email">E-Mail Address</label>
-              <input type="email" class="form-control {{$errors->has('email') ? 'is-invalid' : ''}}" id="email" name="email" value="{{ old('email') }}" aria-describedby="emailFeedback" required>
+              <input type="email" class="form-control {{$errors->has('email') ? 'is-invalid' : ''}}" id="email" name="email" value="{{ old('email') }}" aria-describedby="emailFeedback">
               @if ($errors->has('email'))
                 <div id="emailFeedback" class="invalid-feedback">
                   <strong>{{ $errors->first('email') }}</strong>
@@ -34,7 +34,7 @@
 
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" class="form-control {{$errors->has('password') ? 'is-invalid' : ''}}" id="password" name="password" aria-describedby="passwordFeedback" required>
+              <input type="password" class="form-control {{$errors->has('password') ? 'is-invalid' : ''}}" id="password" name="password" value="{{ old('password') }}" aria-describedby="passwordFeedback">
               @if ($errors->has('password'))
                 <div id="passwordFeedback" class="invalid-feedback">
                   <strong>{{ $errors->first('password') }}</strong>
@@ -43,8 +43,13 @@
             </div>
 
             <div class="form-group">
-              <label for="password-confirm">Confirm Password</label>
-              <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+              <label for="password-confirm">Konfirmasi Password</label>
+              <input type="password" class="form-control {{$errors->has('password_confirmation') ? 'is-invalid' : ''}}" id="password-confirm" name="password_confirmation" aria-describedby="passwordConfirmationFeedback">
+              @if ($errors->has('password_confirmation'))
+                <div id="passwordConfirmationFeedback" class="invalid-feedback">
+                  <strong>{{ $errors->first('password_confirmation') }}</strong>
+                </div>
+              @endif
             </div>
 
             <div class="form-group">
@@ -52,6 +57,7 @@
                 Register
               </button>
             </div>
+            
           </form>
         @endcomponent
       </div>
