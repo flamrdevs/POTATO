@@ -21,4 +21,10 @@ class FarmerController extends Controller
     {
         return view('farmer.profile');
     }
+
+    // weather
+    public function weather_index()
+    {
+        return view('farmer.weather.index');
+    }
 }

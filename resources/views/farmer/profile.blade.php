@@ -1,17 +1,5 @@
-@extends('layouts.app')
+@extends('farmer.layout')
 
-@section('content')
-  <div class="container mt-4">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        @component('components.card')
-          @slot('header')
-            farmer profile
-          @endslot
-
-          Nama : {{ Auth::user()->name }}
-        @endcomponent
-      </div>
-    </div>
-  </div>
+@section('main')
+  <h1>Hello Farmer Profile</h1>
 @endsection

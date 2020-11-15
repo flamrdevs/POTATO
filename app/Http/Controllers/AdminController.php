@@ -31,7 +31,7 @@ class AdminController extends Controller
     // farmer management
     public function farmer_index()
     {
-        $farmers = User::where('role','farmer')->get();
+        $farmers = User::where('role','farmer')->paginate(10);
         return view('admin.farmer.index', compact('farmers'));
     }
 
@@ -84,8 +84,14 @@ class AdminController extends Controller
         $user->name = ucwords(strtolower($request->name));
         $user->email = strtolower($request->email);
         $user->password = Hash::make($request->password);
-        $user->role = 'farmer';
+        $user->role = strtolower('farmer');
 
         return $user->save();
+    }
+
+    // weather
+    public function weather_index()
+    {
+        return view('admin.weather.index');
     }
 }

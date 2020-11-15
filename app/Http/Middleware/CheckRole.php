@@ -18,7 +18,14 @@ class CheckRole
     {
         // redirect to current role
         if (Auth::user()->role != $role) {
-            return redirect('/'.Auth::user()->role);
+            if (Auth::user()->role == 'admin') {
+                return redirect()->route('admin');
+            }
+            if (Auth::user()->role == 'farmer') {
+                return redirect()->route('farmer');
+            }
+            Auth::logout();
+            return redirect()->route('welcome');
         }
         
         return $next($request);

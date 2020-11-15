@@ -1,14 +1,10 @@
-{{-- @extends('layouts.app')
+@extends('layouts.app')
 
-@section('content')
+@section('body')
   <div class="container mt-4">
     <div class="row">
       <div class="col-md-6 offset-md-3">
-        @component('components.card')
-          @slot('header')
-            Login
-          @endslot
-
+        <div>
           @if (Session::has('error'))
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
               <strong>{{ Session::get('error') }}</strong>
@@ -46,9 +42,10 @@
                 Login
               </button>
             </div>
+            
           </form>
-        @endcomponent
+        </div>
       </div>
     </div>
   </div>
-@endsection --}}
+@endsection

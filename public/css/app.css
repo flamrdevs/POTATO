@@ -1,19 +1,20 @@
 .left-side-home {
-  background-color: red;
   position: fixed;
   top: 0;
   right: auto;
   bottom: 0;
   left: 0;
   width: 220px;
+  padding: 7px;
 }
 
 .right-side-home {
-  background-color: aqua;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 220px;
   width: auto;
+  padding: 7px;
+  overflow-y: auto;
 }
