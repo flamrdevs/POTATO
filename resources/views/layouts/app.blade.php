@@ -21,7 +21,7 @@
   
 </head>
 
-<body>
+<body @yield('bodyStyle')>
   @yield('body')
 
   <!-- Scripts -->

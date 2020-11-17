@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\Weather;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Hash;
@@ -18,30 +19,141 @@ class AdminController extends Controller
         $this->middleware(['auth','role:admin']);
     }
 
+    // 
+    // ADMIN
+    // 
+
+    // view admin home
     public function index()
     {
         return view('admin.index');
     }
 
+    // view admin profile
     public function profile()
     {
-        return view('admin.profile');
+        $user = User::find(Auth::user()->id);
+        return view('admin.profile', compact('user'));
     }
 
-    // farmer management
+    // view edit data admin
+    public function edit()
+    {
+        $user = User::find(Auth::user()->id);
+        return view('admin.edit', compact('user'));
+    }
+
+    // view ubah password
+    public function password(Request $request)
+    {
+        return view('admin.password');
+    }
+
+    // api admin update
+    public function update(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        
+        $validator = $this->validateUpdateUser($request);
+
+        if ($validator->fails()) {
+            return redirect()->route('admin.edit')->withErrors($validator)->withInput($request->all());
+        }
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->address = $request->address;
+        $user->birthDate = $request->birthDate;
+        $user->gender = $request->gender;
+
+        if ($user->save()) {
+            Session::flash('success','Data berhasil diperbarui');
+        } else {
+            Session::flash('error','Data gagal diperbarui');
+        }
+
+        return view('admin.profile', compact('user'));
+    }
+
+    // api admin update password
+    public function updatePassword(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+
+        $validator = $this->validateUpdatePassword($request);
+
+        if ($validator->fails()) {
+            return redirect()->route('admin.password')->withErrors($validator)->withInput($request->all());
+        }
+
+        if (Hash::check($request->currentPassword, $user->password)) {
+            $user->password = Hash::make($request->password);
+        } else {
+            Session::flash('password','Password saat ini salah');
+            return redirect()->route('admin.password')->withErrors($validator)->withInput($request->all());
+        }
+        
+        if ($user->save()) {
+            Session::flash('success','Password berhasil diperbarui');
+        } else {
+            Session::flash('error','Password gagal diperbarui');
+        }
+
+        return view('admin.profile', compact('user'));
+    }
+
+    // validasi update user
+    private function validateUpdateUser($request)
+    {
+        return Validator::make($request->all(), [
+            'name' => 'required|min:3|max:50',
+            'email' => 'required|email|unique:users,email,'.Auth::user()->id,
+        ], [
+            'name.required' => 'Nama harus di isi',
+            'email.required' => 'Email harus di isi',
+            'email.unique' => 'Email sudah terdaftar',
+        ]);
+    }
+
+    // validasi update password
+    private function validateUpdatePassword($request)
+    {
+        return Validator::make($request->all(), [
+            'currentPassword' => 'required|min:8',
+            'password' => 'required|min:8',
+            'password_confirmation' => 'required|min:8|same:password',
+        ], [
+            'currentPassword.required' => 'Password saat ini harus di isi',
+            'currentPassword.min' => 'Password minimal berisi 8 karakter',
+            'password.required' => 'Password baru harus di isi',
+            'password.min' => 'Password minimal berisi 8 karakter',
+            'password_confirmation.required' => 'Konfirmasi password harus di isi',
+            'password_confirmation.min' => 'Password minimal berisi 8 karakter',
+            'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
+        ]);
+    }
+
+    // 
+    // FARMER
+    // 
+
+    // view table semua petani
     public function farmer_index()
     {
         $farmers = User::where('role','farmer')->paginate(10);
         return view('admin.farmer.index', compact('farmers'));
     }
 
+    // view buat akun petani
     public function farmer_create()
     {
         return view('admin.farmer.create');
     }
 
+    // api petani save
     public function farmer_store(Request $request)
-    {   
+    {
         $validator = $this->validateCreateFarmer($request);
         if ($validator->fails()) {
             return redirect()->route('admin.farmer.create')->withErrors($validator)->withInput($request->except('password_confirmation'));
@@ -49,18 +161,57 @@ class AdminController extends Controller
 
         if ($this->attemptCreateFarmer($request)) {
             Session::flash('success', 'Data petani berhasil dibuat');
-            return redirect()->route('admin.farmer.index');
+            return redirect()->route('admin.farmer');
         } else {
             return redirect()->route('admin.farmer.create');
         }
     }
 
+    // view satu akun petani
     public function farmer_show($id)
     {
-        $farmer = User::where('id', $id)->get();
+        $farmer = User::find($id);
+        if ($farmer->role != 'farmer') {
+            return redirect()->route('admin.farmer');
+        }
         return view('admin.farmer.show', compact('farmer'));
     }
 
+    // view edit akun petani
+    public function farmer_edit($id)
+    {
+        $farmer = User::find($id);
+        if ($farmer->role != 'farmer') {
+            return redirect()->route('admin.farmer');
+        }
+        return view('admin.farmer.edit', compact('farmer'));
+    }
+
+    // api petani update
+    public function farmer_update(Request $request, $id)
+    {
+        $user = User::find($id);
+        if ($user->role != 'farmer') {
+            return redirect()->route('admin.farmer');
+        }
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->address = $request->address;
+        $user->birthDate = $request->birthDate;
+        $user->gender = $request->gender;
+
+        if ($user->save()) {
+            Session::flash('success','Data berhasil diperbarui');
+        } else {
+            Session::flash('error','Data gagal diperbarui');
+        }
+
+        return redirect()->route('admin.farmer.show',['id' => $farmer->id]);
+    }
+
+    // validasi buat akun petani
     private function validateCreateFarmer($request)
     {
         return Validator::make($request->all(), [
@@ -78,20 +229,35 @@ class AdminController extends Controller
         ]);
     }
 
+    // simpan akun petani
     private function attemptCreateFarmer($request)
     {
-        $user = new User;
-        $user->name = ucwords(strtolower($request->name));
-        $user->email = strtolower($request->email);
-        $user->password = Hash::make($request->password);
-        $user->role = strtolower('farmer');
-
-        return $user->save();
+        return User::create([
+            'name' => ucwords(strtolower($request->name)),
+            'email' => strtolower($request->email),
+            'password' => Hash::make($request->password),
+            'birthDate' => $request->birthDate,
+            'gender' => strtolower($request->gender),
+            'phone' => strtolower($request->phone),
+            'address' => $request->address,
+            'role' => strtolower('farmer')
+        ])->save();
     }
 
-    // weather
+    // 
+    // WEATHER
+    // 
+
+    // view cuaca
     public function weather_index()
     {
-        return view('admin.weather.index');
+        $magetanId = '501289';
+        // extends method from Controller::class
+        $weather = $this->extend__weather_getArea($magetanId);
+        if ($weather == null) {
+            return redirect()->route('admin.weather');
+        }
+
+        return view('admin.weather.index', compact('weather'));
     }
 }

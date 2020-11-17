@@ -14,10 +14,8 @@ use Session;
 class AuthController extends Controller
 {
     public function showLoginForm()
-    {
-        if (Auth::check()) {
-            return redirect()->route('admin');
-        }
+    {   
+        $this->middleware(['guest']);
         return view('auth.login');
     }
 

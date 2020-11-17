@@ -11,26 +11,21 @@
 |
 */
 
-use App\User;
+// use GHelp;
 
-// ! DEV MODE ONLY
+// ! DEV MODE ONLY \/
 Route::get('/forcelogout', function () {
     Auth::logout();
     return redirect()->route('welcome');
 });
-// ! DEV MODE ONLY
+// ! DEV MODE ONLY /\
 
 Route::view('/', 'welcome')->middleware('guest')->name('welcome');
-
-Route::view('/design', 'design', ['users' => User::where('role','farmer')->get()]);
 
 // Auth
 Route::get('login', 'AuthController@showLoginForm')->name('login');
 Route::post('login', 'AuthController@login');
 Route::post('logout', 'AuthController@logout')->name('logout');
-
-Route::get('register', 'AuthController@showRegisterForm')->name('register');
-Route::post('register', 'AuthController@register');
 
 // Admin Dashboard
 Route::group(['prefix' => 'admin'], function () {
@@ -39,6 +34,10 @@ Route::group(['prefix' => 'admin'], function () {
         // url : /admin
         Route::get('/', 'AdminController@index');
         Route::get('/profile', 'AdminController@profile')->name('.profile');
+        Route::get('/profile/edit', 'AdminController@edit')->name('.edit');
+        Route::get('/profile/password', 'AdminController@password')->name('.password');
+        Route::put('/profile/update', 'AdminController@update')->name('.update');
+        Route::put('/profile/update/password', 'AdminController@updatePassword')->name('.update.password');
 
         Route::name('.farmer')->group(function() {
             // url : /admin/farmer
@@ -46,26 +45,22 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('/', 'AdminController@farmer_index');
                 Route::get('/create', 'AdminController@farmer_create')->name('.create');
                 Route::post('/store', 'AdminController@farmer_store')->name('.store');
-                Route::get('/show', 'AdminController@farmer_show')->name('.show');
+                Route::get('/{id}', 'AdminController@farmer_show')->name('.show');
+                Route::get('/{id}/edit', 'AdminController@farmer_edit')->name('.edit');
+                Route::put('/{id}', 'AdminController@farmer_update')->name('.update');
             });
         });
-
-        // Route::name('.farming')->group(function() {
-        //     // url : /admin/farming
-        //     Route::group(['prefix' => 'farming'], function () {
-        //         Route::get('/', 'AdminController@farming_index');
-        //         Route::get('/create', 'AdminController@farming_create')->name('.create');
-        //         Route::post('/store', 'AdminController@farming_store')->name('.store');
-        //         Route::get('/show', 'AdminController@farming_show')->name('.show');
-        //     });
-        // });
 
         Route::name('.weather')->group(function() {
             // url : /admin/weather
             Route::get('/weather', 'AdminController@weather_index');
         });
-
     });
+
+    // fallback url : /admin/any
+    // Route::fallback(function() {
+    //     return redirect()->route('admin');
+    // });
 });
 
 // Farmer Dashboard
@@ -75,18 +70,24 @@ Route::group(['prefix' => 'farmer'], function () {
         // url : /farmer
         Route::get('/', 'FarmerController@index');
         Route::get('/profile', 'FarmerController@profile')->name('.profile');
-
-        // Route::name('.farming')->group(function() {
-        //     // url : /farmer/farming
-        //     Route::group(['prefix' => 'farming'], function () {
-        //         Route::get('/', 'FarmerController@farming_index')->name('.index');
-        //         Route::get('/show', 'FarmerController@farming_show')->name('.show');
-        //     });
-        // });
+        Route::get('/profile/edit', 'FarmerController@edit')->name('.edit');
+        Route::get('/profile/password', 'FarmerController@password')->name('.password');
+        Route::put('/profile/update', 'FarmerController@update')->name('.update');
+        Route::put('/profile/update/password', 'FarmerController@updatePassword')->name('.update.password');
 
         Route::name('.weather')->group(function() {
             // url : /farmer/weather
             Route::get('/weather', 'FarmerController@weather_index');
         });
     });
+
+    // fallback url : /farmer/any
+    // Route::fallback(function() {
+    //     return redirect()->route('farmer');
+    // });
 });
+
+// fallback url : /any
+// Route::fallback(function() {
+//     return redirect()->route('login');
+// });

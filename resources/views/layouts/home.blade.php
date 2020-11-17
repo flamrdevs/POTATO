@@ -16,11 +16,7 @@
       </button>
       <div class="dropdown-menu dropdown-menu-left dropdown-menu-lg-right">
         <a class="dropdown-item" type="button" href="{{ route(Auth::user()->role == 'admin' ? 'admin.profile' : 'farmer.profile') }}">Profil</a>
-        <a class="dropdown-item" type="button" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-          {{ csrf_field() }}
-        </form>
+        <a role="button" class="dropdown-item" data-toggle="modal" data-target="#logoutModal">Logout</a>
       </div>
     </div>
   </nav>
@@ -35,7 +31,33 @@
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         @yield('main')
+
+        <div class="spacer-5"></div>
       </main>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Keluar aplikasi</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Apakah anda yakin ingin keluar ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
+          <a class="btn btn-primary" type="button" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Ya</a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            {{ csrf_field() }}
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 @endsection
