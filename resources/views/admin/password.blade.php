@@ -23,7 +23,7 @@
     <div class="card shadow-sm">
       <div class="card-body">
 
-        <form action="{{ route('admin.update.password') }}" method="POST">
+        <form action="{{ route('admin.updatePassword') }}" method="POST">
           {{ csrf_field() }}
           {{ method_field('PUT') }}
 

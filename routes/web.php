@@ -37,7 +37,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/profile/edit', 'AdminController@edit')->name('.edit');
         Route::get('/profile/password', 'AdminController@password')->name('.password');
         Route::put('/profile/update', 'AdminController@update')->name('.update');
-        Route::put('/profile/update/password', 'AdminController@updatePassword')->name('.update.password');
+        Route::put('/profile/update/password', 'AdminController@updatePassword')->name('.updatePassword');
 
         Route::name('.farmer')->group(function() {
             // url : /admin/farmer
@@ -73,7 +73,7 @@ Route::group(['prefix' => 'farmer'], function () {
         Route::get('/profile/edit', 'FarmerController@edit')->name('.edit');
         Route::get('/profile/password', 'FarmerController@password')->name('.password');
         Route::put('/profile/update', 'FarmerController@update')->name('.update');
-        Route::put('/profile/update/password', 'FarmerController@updatePassword')->name('.update.password');
+        Route::put('/profile/update/password', 'FarmerController@updatePassword')->name('.updatePassword');
 
         Route::name('.weather')->group(function() {
             // url : /farmer/weather
