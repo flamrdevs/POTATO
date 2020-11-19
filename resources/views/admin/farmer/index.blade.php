@@ -29,6 +29,7 @@
             <a class="btn btn-primary btn-sm" href="{{ route('admin.farmer.create') }}" role="button">Tambah</a>
           </div>
         </div>
+
         <div class="table-responsive">
           <table class="table table-hover table-bordered">
             <thead class="thead-light">
@@ -55,6 +56,7 @@
             </tbody>
           </table>
         </div>
+        
         <div class="d-flex justify-content-between">
           <p>Menampilkan {{ $farmers->count() }} dari {{ $farmers->total() }} petani</p>
           <nav aria-label="Page navigation example">

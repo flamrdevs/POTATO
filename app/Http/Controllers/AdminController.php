@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
-use App\Weather;
+use App\SoilMoisture;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Hash;
@@ -13,7 +13,7 @@ use Session;
 
 class AdminController extends Controller
 {
-    // middleware
+    // Construct
     public function __construct()
     {
         $this->middleware(['auth','role:admin']);
@@ -242,6 +242,22 @@ class AdminController extends Controller
             'address' => $request->address,
             'role' => strtolower('farmer')
         ])->save();
+    }
+
+    // 
+    // SOIL MOISTURE
+    // 
+
+    public function soilmoisture_index()
+    {
+        $soilmoistures = SoilMoisture::paginate(20);
+        return view('admin.soilmoisture.index', compact('soilmoistures'));
+    }
+
+    public function soilmoisture_show($machine_id)
+    {
+        $soilmoistures = SoilMoisture::where('machine_id', $machine_id)->paginate(20);
+        return view('admin.soilmoisture.show', compact('soilmoistures'));
     }
 
     // 

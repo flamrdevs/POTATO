@@ -12,13 +12,20 @@ use Hash;
 use Session;
 
 class AuthController extends Controller
-{
+{   
+    // Construct
+    public function __construct()
+    {
+        $this->middleware('guest', ['only' => ['showLoginForm']]);
+    }
+
+    // form
     public function showLoginForm()
     {   
-        $this->middleware(['guest']);
         return view('auth.login');
     }
 
+    // validate
     private function validateLogin($request)
     {
         return Validator::make($request->all(), [
@@ -30,6 +37,7 @@ class AuthController extends Controller
         ]);
     }
 
+    // attempt
     private function attemptLogin($request)
     {
         Auth::attempt([
@@ -40,6 +48,7 @@ class AuthController extends Controller
         return Auth::check();
     }
 
+    // redirect
     private function redirectUser()
     {
         if (Auth::user()->role == 'admin') {
@@ -49,6 +58,7 @@ class AuthController extends Controller
         }
     }
     
+    // login
     public function login(Request $request)
     {   
         $validator = $this->validateLogin($request);
@@ -64,6 +74,7 @@ class AuthController extends Controller
         }
     }
 
+    // logout
     public function logout()
     {
         Auth::logout();

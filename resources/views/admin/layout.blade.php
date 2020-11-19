@@ -10,6 +10,9 @@
         <a class="nav-link {{ Request::is('admin/farmer*') ? 'active' : 'text-dark' }}" href="{{ route('admin.farmer') }}">Petani</a>
       </li>
       <li class="nav-item my-1">
+        <a class="nav-link {{ Request::is('admin/soilmoisture*') ? 'active' : 'text-dark' }}" href="{{ route('admin.soilmoisture') }}">Kelembaban Tanah</a>
+      </li>
+      <li class="nav-item my-1">
         <a class="nav-link {{ Request::is('admin/weather*') ? 'active' : 'text-dark' }}" href="{{ route('admin.weather') }}">Cuaca</a>
       </li>
     </ul>

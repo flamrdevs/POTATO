@@ -7,6 +7,9 @@
         <a class="nav-link {{ Request::is('farmer') || Request::is('farmer/profile*') ? 'active' : 'text-dark' }}" href="{{ route('farmer') }}">Home</a>
       </li>
       <li class="nav-item my-1">
+        <a class="nav-link {{ Request::is('farmer/soilmoisture*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.soilmoisture') }}">Kelembaban Tanah</a>
+      </li>
+      <li class="nav-item my-1">
         <a class="nav-link {{ Request::is('farmer/weather*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.weather') }}">Cuaca</a>
       </li>
     </ul>

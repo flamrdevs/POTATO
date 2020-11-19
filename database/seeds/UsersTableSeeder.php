@@ -13,19 +13,24 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
-            'name' => 'AdminSeed',
-            'email' => 'AdminSeed@gmail.com',
-            'password' => Hash::make('AdminSeed'),
-            'role' => 'admin'
-        ]);
+        $users = [
+            [
+                'name' => 'AdminSeed',
+                'email' => 'AdminSeed@gmail.com',
+                'password' => Hash::make('AdminSeed'),
+                'role' => 'admin'
+            ],
+            [
+                'name' => 'FarmerSeed',
+                'email' => 'FarmerSeed@gmail.com',
+                'password' => Hash::make('FarmerSeed'),
+                'role' => 'farmer'
+            ]
+        ];
 
-        User::create([
-            'name' => 'FarmerSeed',
-            'email' => 'FarmerSeed@gmail.com',
-            'password' => Hash::make('FarmerSeed'),
-            'role' => 'farmer'
-        ]);
+        foreach ($users as $user) {
+            User::create($user);
+        }
 
         factory(User::class, 20)->create();
     }

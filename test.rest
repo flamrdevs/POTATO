@@ -1,0 +1,11 @@
+GET http://www.potato.test/api/soilmoisture
+
+##
+
+# POST http://www.potato.test/api/soilmoisture
+# Content-Type: application/json
+
+# {
+#   "data": "10",
+#   "machineID": "1A"
+# }

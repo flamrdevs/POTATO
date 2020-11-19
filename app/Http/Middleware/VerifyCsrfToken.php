@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        'http://www.potato.test/api/soilmoisture',
+        'http://192.168.43.179/POTATO/public/api/soilmoisture'
     ];
 }

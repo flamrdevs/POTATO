@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\SoilMoisture;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Hash;
@@ -12,7 +13,7 @@ use Session;
 
 class FarmerController extends Controller
 {
-    // middleware
+    // Construct
     public function __construct()
     {
         $this->middleware(['auth','role:farmer']);
@@ -131,6 +132,22 @@ class FarmerController extends Controller
             'password_confirmation.min' => 'Password minimal berisi 8 karakter',
             'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
         ]);
+    }
+
+    // 
+    // SOIL MOISTURE
+    // 
+
+    public function soilmoisture_index()
+    {
+        $soilmoistures = SoilMoisture::paginate(20);
+        return view('farmer.soilmoisture.index', compact('soilmoistures'));
+    }
+
+    public function soilmoisture_show($machine_id)
+    {
+        $soilmoistures = SoilMoisture::where('machine_id', $machine_id)->paginate(20);
+        return view('farmer.soilmoisture.show', compact('soilmoistures'));
     }
 
     // 
