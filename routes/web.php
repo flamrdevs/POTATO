@@ -91,6 +91,15 @@ Route::group(['prefix' => 'farmer'], function ()
         Route::get('/profile/password', 'FarmerController@password')->name('.password');
         Route::put('/profile/update', 'FarmerController@update')->name('.update');
         Route::put('/profile/update/password', 'FarmerController@updatePassword')->name('.updatePassword');
+
+        Route::name('.farmer')->group(function()
+        {
+            // url : /farmer/farmer
+            Route::group(['prefix' => 'farmer'], function ()
+            {
+                Route::get('/', 'FarmerController@farmer_index');
+            });
+        });
         
         Route::name('.soilmoisture')->group(function()
         {

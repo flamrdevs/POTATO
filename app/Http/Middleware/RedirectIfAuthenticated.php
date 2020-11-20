@@ -18,14 +18,15 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            if (Auth::user()->role == 'admin') {
-                return redirect()->route('admin');
+            switch (Auth::user()->role) {
+                case 'admin':
+                    return redirect()->route('admin');
+                case 'farmer':
+                    return redirect()->route('farmer');
+                default:
+                    Auth::logout();
+                    return redirect()->route('welcome');
             }
-            if (Auth::user()->role == 'farmer') {
-                return redirect()->route('farmer');
-            }
-            Auth::logout();
-            return redirect()->route('welcome');
         }
 
         return $next($request);

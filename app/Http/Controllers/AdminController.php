@@ -20,7 +20,7 @@ class AdminController extends Controller
     }
 
     // 
-    // ADMIN
+    // HOME
     // 
 
     // view admin home
@@ -132,6 +132,72 @@ class AdminController extends Controller
             'password_confirmation.min' => 'Password minimal berisi 8 karakter',
             'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
         ]);
+    }
+
+    // 
+    // BROADCAST
+    //
+
+    // view pesan semua siaran
+    public function broadcast_index()
+    {
+        return response()->json(['broadcast' => 'index'], 200);
+    }
+
+    // view buat data siaran
+    public function broadcast_create()
+    {
+        return response()->json(['broadcast' => 'create'], 200);
+    }
+
+    // api siaran save
+    public function broadcast_store(Request $request)
+    {
+        return response()->json(['broadcast' => 'store'], 200);
+    }
+
+    // 
+    // FARMING
+    //
+
+    // view table semua bertani
+    public function farming_index()
+    {
+        return response()->json(['farming' => 'index'], 200);
+    }
+
+    // view buat data bertani
+    public function farming_create()
+    {
+        return response()->json(['farming' => 'create'], 200);
+    }
+
+    // api bertani save
+    public function farming_store(Request $request)
+    {
+        return response()->json(['farming' => 'store'], 200);
+    }
+
+    // 
+    // PLANT
+    //
+
+    // view table semua tanaman
+    public function plant_index()
+    {
+        return response()->json(['plant' => 'index'], 200);
+    }
+
+    // view buat data tanaman
+    public function plant_create()
+    {
+        return response()->json(['plant' => 'create'], 200);
+    }
+
+    // api tanaman save
+    public function plant_store(Request $request)
+    {
+        return response()->json(['plant' => 'store'], 200);
     }
 
     // 

@@ -20,7 +20,7 @@ class FarmerController extends Controller
     }
 
     // 
-    // FARMER
+    // HOME
     // 
 
     // view farmer home
@@ -135,6 +135,17 @@ class FarmerController extends Controller
     }
 
     // 
+    // FARMER
+    // 
+
+    // view table semua petani
+    public function farmer_index()
+    {
+        $farmers = User::where('role','farmer')->paginate(10);
+        return view('farmer.farmer.index', compact('farmers'));
+    }
+
+    // 
     // SOIL MOISTURE
     // 
 
@@ -161,7 +172,7 @@ class FarmerController extends Controller
         // extends method from Controller::class
         $weather = $this->extend__weather_getArea($magetanId);
         if ($weather == null) {
-            return redirect()->route('admin.weather');
+            return redirect()->route('farmer.weather');
         }
 
         return view('farmer.weather.index', compact('weather'));
