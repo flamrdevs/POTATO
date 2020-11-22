@@ -16,7 +16,12 @@ class CheckRole
      */
     public function handle($request, Closure $next, $role)
     {
-        // redirect to current role
+        // role pada controller selain role admin dan farmer maka logout
+        if ($role != 'admin' && $role != 'farmer') {
+            Auth::logout();
+            return redirect()->route('welcome');
+        }
+        // jika role tidak sama dengan role pada controller
         if (Auth::user()->role != $role) {
             switch (Auth::user()->role) {
                 case 'admin':

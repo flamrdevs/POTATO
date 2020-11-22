@@ -15,6 +15,10 @@ class CreatePlantsTable extends Migration
     {
         Schema::create('plants', function (Blueprint $table) {
             $table->increments('id');
+            
+            $table->string('name', 63);
+            $table->float('minHumidity')->default(60.0);
+
             $table->timestamps();
         });
     }

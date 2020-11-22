@@ -4,55 +4,74 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\User;
-use App\SoilMoisture;
-use Illuminate\Support\Facades\Auth;
+// Framework
 use Validator;
 use Hash;
 use Session;
 
+// Model
+use App\User;
+use App\SoilMoisture;
+use App\Broadcast;
+use App\Farming;
+use App\Plant;
+use App\Weather;
+
 class AdminController extends Controller
 {
-    // Construct
+    // ? CONSTRUCT
     public function __construct()
     {
+        // Middleware
+        // 1. Apakah sudah terautentikasi
+        // 2. Apakah role user adalah admin
         $this->middleware(['auth','role:admin']);
     }
 
-    // 
-    // HOME
-    // 
+    // *-----------------------------------------------------------------------
+    // *     HOME
+    // *-----------------------------------------------------------------------
 
-    // view admin home
+    // ? GET
+    // VIEW :: admin.index
+    // halaman home admin
     public function index()
     {
         return view('admin.index');
     }
 
-    // view admin profile
+    // ? GET
+    // VIEW :: admin.profile
+    // halaman profile admin
     public function profile()
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::auth();
         return view('admin.profile', compact('user'));
     }
 
-    // view edit data admin
+    // ? GET
+    // VIEW :: admin.edit
+    // halaman form ubah data admin
     public function edit()
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::auth();
         return view('admin.edit', compact('user'));
     }
 
-    // view ubah password
-    public function password(Request $request)
+    // ? GET
+    // VIEW :: admin.password
+    // halaman form ubah password admin
+    public function password()
     {
         return view('admin.password');
     }
 
-    // api admin update
+    // ? PUT
+    // ENDPOINT :: User update
+    // api untuk update data admin kecuali password
     public function update(Request $request)
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::auth();
         
         $validator = $this->validateUpdateUser($request);
 
@@ -76,10 +95,12 @@ class AdminController extends Controller
         return view('admin.profile', compact('user'));
     }
 
-    // api admin update password
+    // ? PUT
+    // ENDPOINT :: User update
+    // api untuk update data admin hanya password
     public function updatePassword(Request $request)
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::auth();
 
         $validator = $this->validateUpdatePassword($request);
 
@@ -103,7 +124,9 @@ class AdminController extends Controller
         return view('admin.profile', compact('user'));
     }
 
-    // validasi update user
+    // ? SELF
+    // VALIDATE ? User
+    // function validasi update data admin kecuali password
     private function validateUpdateUser($request)
     {
         return Validator::make($request->all(), [
@@ -116,7 +139,9 @@ class AdminController extends Controller
         ]);
     }
 
-    // validasi update password
+    // ? SELF
+    // VALIDATE ? User
+    // function validasi update data admin hanya password
     private function validateUpdatePassword($request)
     {
         return Validator::make($request->all(), [
@@ -134,90 +159,232 @@ class AdminController extends Controller
         ]);
     }
 
-    // 
-    // BROADCAST
-    //
+    // /___ A ++++
 
-    // view pesan semua siaran
+    // *-----------------------------------------------------------------------
+    // *     BROADCAST
+    // *-----------------------------------------------------------------------
+
+    // ? GET
+    // VIEW :: admin.broadcast.index
+    // halaman data siaran
     public function broadcast_index()
     {
-        return response()->json(['broadcast' => 'index'], 200);
+        $broadcasts = Broadcast::all();
+
+        return view('admin.broadcast.index', compact('broadcasts'));
     }
 
-    // view buat data siaran
-    public function broadcast_create()
-    {
-        return response()->json(['broadcast' => 'create'], 200);
-    }
-
-    // api siaran save
+    // ? POST
+    // ENDPOINT :: Broadcast store
+    // api untuk menyimpan data siaran
     public function broadcast_store(Request $request)
     {
-        return response()->json(['broadcast' => 'store'], 200);
+        // $validator = $this->validateCreateBroadcast($request);
+        // if ($validator->fails()) {
+        //     return view('admin.broadcast.index')->withErrors($validator);
+        // }
+
+        // if ($this->attemptCreateBroadcast($request)) {
+        //     Session::flash('success', 'Data success');
+        // } else {
+        //     Session::flash('failure', 'Data failure');
+        // }
+
+        return view('admin.broadcast.index');
     }
 
-    // 
-    // FARMING
-    //
+    // ? DELETE
+    // ENDPOINT :: Broadcast delete
+    // api untuk menghapus siaran (hapus hanya untuk petani)
+    public function broadcast_softDelete($id)
+    {
+        // $broadcast = Broadcast::find($id);
+        // $broadcast->deleted = true;
+        // $broadcast->save();
 
-    // view table semua bertani
+        return view('admin.broadcast.index');
+    }
+
+    // ? SELF
+    // VALIDATE ? Broadcast
+    // function validasi data siaran
+    private function validateCreateBroadcast($request)
+    {
+        return Validator::make($request->all(), [
+            'message' => 'required',
+        ], [
+            'message.required' => 'Pesan harus di isi',
+        ]);
+    }
+
+    // ? SELF
+    // SAVE ? Broadcast
+    // function tambah data siaran ke database
+    private function attemptCreateBroadcast($request)
+    {
+        return Broadcast::create([
+            'message' => $request->message
+        ])->save();
+    }
+
+    // *-----------------------------------------------------------------------
+    // *     FARMING
+    // *-----------------------------------------------------------------------
+
+    // ? GET
+    // VIEW :: admin.farming.index
+    // halaman data bertani
     public function farming_index()
     {
-        return response()->json(['farming' => 'index'], 200);
+        // $farmings = Farming::all();
+
+        return view('admin.farming.index');
     }
 
-    // view buat data bertani
+    // ? GET
+    // VIEW :: admin.farming.create
+    // halaman form tambah data bertani
     public function farming_create()
     {
-        return response()->json(['farming' => 'create'], 200);
+        return view('admin.farming.create');
     }
 
-    // api bertani save
+    // ? POST
+    // ENDPOINT :: Farming store
+    // api untuk menyimpan data bertani
     public function farming_store(Request $request)
     {
-        return response()->json(['farming' => 'store'], 200);
+        $validator = $this->validateCreateFarming($request);
+        if ($validator->fails()) {
+            return view('admin.farming.index')->withErrors($validator);
+        }
+
+        if ($this->attemptCreateFarming($request)) {
+            Session::flash('success', 'Data success');
+        } else {
+            Session::flash('failure', 'Data failure');
+        }
+
+        return view('admin.farming.index');
     }
 
-    // 
-    // PLANT
-    //
+    // ? SELF
+    // VALIDATE ? Farming
+    // function validasi data bertani
+    private function validateCreateFarming($request)
+    {
+        return Validator::make($request->all(), [
+            'name' => 'required',
+            'minHumidity' => 'required'
+        ], [
+            'name.required' => 'Pesan harus di isi',
+            'minHumidity.required' => 'Data kelembaban minimal harus diisi'
+        ]);
+    }
 
-    // view table semua tanaman
+    // ? SELF
+    // SAVE ? Farming
+    // function tambah data bertani ke database
+    private function attemptCreateFarming($request)
+    {
+        return Farming::create([
+
+        ])->save();
+    }
+
+    // *-----------------------------------------------------------------------
+    // *     PLANT
+    // *-----------------------------------------------------------------------
+
+    // ? GET
+    // VIEW :: admin.plant.index
+    // halaman data tanaman
     public function plant_index()
     {
-        return response()->json(['plant' => 'index'], 200);
+        $plants = Plant::all();
+
+        return view('admin.plant.index', compact('plants'));
     }
 
-    // view buat data tanaman
+    // ? GET
+    // VIEW :: admin.plant.create
+    // halaman form tambah data tanaman
     public function plant_create()
     {
-        return response()->json(['plant' => 'create'], 200);
+        return view('admin.plant.create');
     }
 
-    // api tanaman save
+    // ? POST
+    // ENDPOINT :: Plant store
+    // api untuk menyimpan data tanaman
     public function plant_store(Request $request)
     {
-        return response()->json(['plant' => 'store'], 200);
+        $validator = $this->validateCreatePlant($request);
+        if ($validator->fails()) {
+            return view('admin.plant.index')->withErrors($validator);
+        }
+
+        if ($this->attemptCreatePlant($request)) {
+            Session::flash('success', 'Data success');
+        } else {
+            Session::flash('failure', 'Data failure');
+        }
+
+        return view('admin.plant.index');
     }
 
-    // 
-    // FARMER
-    // 
+    // ? SELF
+    // VALIDATE ? Plant
+    // function validasi data tanaman
+    private function validateCreatePlant($request)
+    {
+        return Validator::make($request->all(), [
+            'name' => 'required',
+            'minHumidity' => 'required'
+        ], [
+            'name.required' => 'Pesan harus di isi',
+            'minHumidity.required' => 'Data kelembaban minimal harus diisi'
+        ]);
+    }
 
-    // view table semua petani
+    // ? SELF
+    // SAVE ? Plant
+    // function tambah data tanaman ke database
+    private function attemptCreatePlant($request)
+    {
+        return Plant::create([
+            'name' => $request->name,
+            'minHumidity' => $request->minHumidity
+        ])->save();
+    }
+
+    // /___ A ----
+
+    // *-----------------------------------------------------------------------
+    // *     FARMER
+    // *-----------------------------------------------------------------------
+
+    // ? GET
+    // VIEW :: admin.farmer.index
+    // halaman data petani
     public function farmer_index()
     {
-        $farmers = User::where('role','farmer')->paginate(10);
+        $farmers = User::farmer(10);
         return view('admin.farmer.index', compact('farmers'));
     }
 
-    // view buat akun petani
+    // ? GET
+    // VIEW :: admin.farmer.create
+    // halaman form tambah data petani
     public function farmer_create()
     {
         return view('admin.farmer.create');
     }
 
-    // api petani save
+    // ? POST
+    // ENDPOINT :: User store
+    // api untuk menyimpan data petani
     public function farmer_store(Request $request)
     {
         $validator = $this->validateCreateFarmer($request);
@@ -233,7 +400,9 @@ class AdminController extends Controller
         }
     }
 
-    // view satu akun petani
+    // ? GET
+    // VIEW :: admin.farmer.show
+    // halaman detail petani
     public function farmer_show($id)
     {
         $farmer = User::find($id);
@@ -243,7 +412,9 @@ class AdminController extends Controller
         return view('admin.farmer.show', compact('farmer'));
     }
 
-    // view edit akun petani
+    // ? GET
+    // VIEW :: admin.farmer.edit
+    // halaman form ubah data petani
     public function farmer_edit($id)
     {
         $farmer = User::find($id);
@@ -253,7 +424,9 @@ class AdminController extends Controller
         return view('admin.farmer.edit', compact('farmer'));
     }
 
-    // api petani update
+    // ? PUT
+    // ENDPOINT :: User update
+    // api untuk update data petani
     public function farmer_update(Request $request, $id)
     {
         $user = User::find($id);
@@ -277,7 +450,9 @@ class AdminController extends Controller
         return redirect()->route('admin.farmer.show',['id' => $farmer->id]);
     }
 
-    // validasi buat akun petani
+    // ? SELF
+    // VALIDATE ? User
+    // function validasi data petani
     private function validateCreateFarmer($request)
     {
         return Validator::make($request->all(), [
@@ -295,7 +470,9 @@ class AdminController extends Controller
         ]);
     }
 
-    // simpan akun petani
+    // ? SELF
+    // SAVE ? User
+    // function tambah data petani ke database
     private function attemptCreateFarmer($request)
     {
         return User::create([
@@ -310,36 +487,52 @@ class AdminController extends Controller
         ])->save();
     }
 
-    // 
-    // SOIL MOISTURE
-    // 
+    // *-----------------------------------------------------------------------
+    // *     SOIL MOISTURE
+    // *-----------------------------------------------------------------------
 
+    // ? GET
+    // VIEW :: admin.soilmoisture.index
+    // halaman data kelembaban tanah
     public function soilmoisture_index()
     {
         $soilmoistures = SoilMoisture::paginate(20);
         return view('admin.soilmoisture.index', compact('soilmoistures'));
     }
 
+    // ? GET
+    // VIEW :: admin.soilmoisture.show
+    // halaman data kelembaban tanah berdasarkan id mesin
     public function soilmoisture_show($machine_id)
     {
         $soilmoistures = SoilMoisture::where('machine_id', $machine_id)->paginate(20);
         return view('admin.soilmoisture.show', compact('soilmoistures'));
     }
 
-    // 
-    // WEATHER
-    // 
+    // *-----------------------------------------------------------------------
+    // *     WEATHER
+    // *-----------------------------------------------------------------------
 
-    // view cuaca
+    // ? GET
+    // VIEW :: admin.weather.index
+    // halaman data cuaca (hari ini)
     public function weather_index()
     {
         $magetanId = '501289';
-        // extends method from Controller::class
-        $weather = $this->extend__weather_getArea($magetanId);
+        $weather = Weather::area($magetanId);
+
         if ($weather == null) {
             return redirect()->route('admin.weather');
         }
 
-        return view('admin.weather.index', compact('weather'));
+        $attributes = $weather['attributes'];
+        $humidity = $weather['humidity'];
+        $minHumidity = $weather['minHumidity']['timerange'][0]['value'];
+        $maxHumidity = $weather['maxHumidity']['timerange'][0]['value'];
+        $temperature = $weather['temperature'];
+        $minTemperature = $weather['minTemperature']['timerange'][0]['value'][0];
+        $maxTemperature = $weather['maxTemperature']['timerange'][0]['value'][0];
+
+        return view('admin.weather.index', compact(['attributes','humidity','minHumidity','maxHumidity','temperature','minTemperature','maxTemperature']));
     }
 }

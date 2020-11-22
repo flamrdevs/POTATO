@@ -28,7 +28,7 @@
               @foreach ($soilmoistures as $sm)
                 <tr>
                   <th scope="row" class="text-center">{{ $loop->iteration}}</th>
-                  <td>{{ $sm->created_at }}</td>
+                  <td>{{ $sm->timestamp }}</td>
                   <td><a class="btn btn-light" href="{{ route('admin.soilmoisture.show', ['machine_id' => $sm->machine_id]) }}" role="button">{{ $sm->machine_id }}</a></td>
                   <td>{{ $sm->value }}</td>
                 </tr>

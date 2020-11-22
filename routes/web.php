@@ -34,11 +34,47 @@ Route::group(['prefix' => 'admin'], function ()
 
         // url : /admin
         Route::get('/', 'AdminController@index');
-        Route::get('/profile', 'AdminController@profile')->name('.profile');
-        Route::get('/profile/edit', 'AdminController@edit')->name('.edit');
-        Route::get('/profile/password', 'AdminController@password')->name('.password');
-        Route::put('/profile/update', 'AdminController@update')->name('.update');
-        Route::put('/profile/update/password', 'AdminController@updatePassword')->name('.updatePassword');
+
+        // url : /admin/profile
+        Route::group(['prefix' => 'profile'], function ()
+        {
+            Route::get('/', 'AdminController@profile')->name('.profile');
+            Route::get('/edit', 'AdminController@edit')->name('.edit');
+            Route::get('/password', 'AdminController@password')->name('.password');
+            Route::put('/update', 'AdminController@update')->name('.update');
+            Route::put('/updatePassword', 'AdminController@updatePassword')->name('.updatePassword');
+        });
+
+        // /___ A ++++
+
+        Route::name('.broadcast')->group(function()
+        {
+            // url : /admin/broadcast
+            Route::group(['prefix' => 'broadcast'], function ()
+            {
+                Route::get('/', 'AdminController@broadcast_index');
+            });
+        });
+
+        Route::name('.farming')->group(function()
+        {
+            // url : /admin/farming
+            Route::group(['prefix' => 'farming'], function ()
+            {
+                Route::get('/', 'AdminController@farming_index');
+            });
+        });
+
+        Route::name('.plant')->group(function()
+        {
+            // url : /admin/plant
+            Route::group(['prefix' => 'plant'], function ()
+            {
+                Route::get('/', 'AdminController@plant_index');
+            });
+        });
+
+        // /___ A ----
 
         Route::name('.farmer')->group(function()
         {
@@ -86,11 +122,16 @@ Route::group(['prefix' => 'farmer'], function ()
 
         // url : /farmer
         Route::get('/', 'FarmerController@index');
-        Route::get('/profile', 'FarmerController@profile')->name('.profile');
-        Route::get('/profile/edit', 'FarmerController@edit')->name('.edit');
-        Route::get('/profile/password', 'FarmerController@password')->name('.password');
-        Route::put('/profile/update', 'FarmerController@update')->name('.update');
-        Route::put('/profile/update/password', 'FarmerController@updatePassword')->name('.updatePassword');
+
+        // url : /farmer/profile
+        Route::group(['prefix' => 'profile'], function ()
+        {
+            Route::get('/', 'FarmerController@profile')->name('.profile');
+            Route::get('/edit', 'FarmerController@edit')->name('.edit');
+            Route::get('/password', 'FarmerController@password')->name('.password');
+            Route::put('/update', 'FarmerController@update')->name('.update');
+            Route::put('/updatePassword', 'FarmerController@updatePassword')->name('.updatePassword');
+        });
 
         Route::name('.farmer')->group(function()
         {
@@ -103,7 +144,7 @@ Route::group(['prefix' => 'farmer'], function ()
         
         Route::name('.soilmoisture')->group(function()
         {
-            // url : /admin/soilmoisture
+            // url : /farmer/soilmoisture
             Route::group(['prefix' => 'soilmoisture'], function ()
             {
                 Route::get('/', 'FarmerController@soilmoisture_index');

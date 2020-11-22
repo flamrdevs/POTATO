@@ -34,6 +34,7 @@ class SoilMoisturesTableSeeder extends Seeder
         ];
 
         foreach ($soilmoistures as $soilmoisture) {
+            // value = 20.00 - 80.00
             $soilmoisture['value'] = mt_rand(2000,8000)/100;
             SoilMoisture::create($soilmoisture);
         }

@@ -16,6 +16,7 @@ class CreateWeathersTable extends Migration
         Schema::create('weathers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('idArea', 15);
+
             $table->string('attributes', 2047);
             $table->string('humidity', 2047);
             $table->string('minHumidity', 1023);
@@ -24,7 +25,8 @@ class CreateWeathersTable extends Migration
             $table->string('minTemperature', 1023);
             $table->string('maxTemperature', 1023);
             $table->string('weather', 2047);
-            $table->timestamps();
+            
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

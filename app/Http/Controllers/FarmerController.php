@@ -4,55 +4,74 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\User;
-use App\SoilMoisture;
-use Illuminate\Support\Facades\Auth;
+// Framework
 use Validator;
 use Hash;
 use Session;
 
+// Model
+use App\User;
+use App\SoilMoisture;
+use App\Broadcast;
+use App\Farming;
+use App\Plant;
+use App\Weather;
+
 class FarmerController extends Controller
 {
-    // Construct
+    // ? CONSTRUCT
     public function __construct()
     {
+        // Middleware
+        // 1. Apakah sudah terautentikasi
+        // 2. Apakah role user adalah farmer
         $this->middleware(['auth','role:farmer']);
     }
 
-    // 
-    // HOME
-    // 
+    // *-----------------------------------------------------------------------
+    // *     HOME
+    // *-----------------------------------------------------------------------
 
-    // view farmer home
+    // ? GET
+    // VIEW :: farmer.index
+    // halaman home petani
     public function index()
     {
         return view('farmer.index');
     }
 
-    // view farmer profile
+    // ? GET
+    // VIEW :: farmer.profile
+    // halaman profile petani
     public function profile()
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::auth();
         return view('farmer.profile', compact('user'));
     }
 
-    // view edit data farmer
+    // ? GET
+    // VIEW :: farmer.edit
+    // halaman form ubah data petani
     public function edit()
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::auth();
         return view('farmer.edit', compact('user'));
     }
 
-    // view ubah password
+    // ? GET
+    // VIEW :: farmer.password
+    // halaman form ubah password petani
     public function password(Request $request)
     {
         return view('farmer.password');
     }
 
-    // api farmer update
+    // ? PUT
+    // ENDPOINT :: User update
+    // api untuk update data petani kecuali password
     public function update(Request $request)
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::auth();
         
         $validator = $this->validateUpdateUser($request);
 
@@ -76,10 +95,12 @@ class FarmerController extends Controller
         return view('farmer.profile', compact('user'));
     }
 
-    // api farmer update password
+    // ? PUT
+    // ENDPOINT :: User update
+    // api untuk update data petani hanya password
     public function updatePassword(Request $request)
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::auth();
 
         $validator = $this->validateUpdatePassword($request);
 
@@ -103,7 +124,9 @@ class FarmerController extends Controller
         return view('farmer.profile', compact('user'));
     }
 
-    // validasi update user
+    // ? SELF
+    // VALIDATE ? User
+    // function validasi update data petani kecuali password
     private function validateUpdateUser($request)
     {
         return Validator::make($request->all(), [
@@ -116,7 +139,9 @@ class FarmerController extends Controller
         ]);
     }
 
-    // validasi update password
+    // ? SELF
+    // VALIDATE ? User
+    // function validasi update data petani hanya password
     private function validateUpdatePassword($request)
     {
         return Validator::make($request->all(), [
@@ -134,47 +159,65 @@ class FarmerController extends Controller
         ]);
     }
 
-    // 
-    // FARMER
-    // 
+    // *-----------------------------------------------------------------------
+    // *     FARMER
+    // *-----------------------------------------------------------------------
 
-    // view table semua petani
+    // ? GET
+    // VIEW :: farmer.farmer.index
+    // halaman data petani
     public function farmer_index()
     {
-        $farmers = User::where('role','farmer')->paginate(10);
+        $farmers = User::farmer(10);
         return view('farmer.farmer.index', compact('farmers'));
     }
 
-    // 
-    // SOIL MOISTURE
-    // 
+    // *-----------------------------------------------------------------------
+    // *     SOIL MOISTURE
+    // *-----------------------------------------------------------------------
 
+    // ? GET
+    // VIEW :: farmer.soilmoisture.index
+    // halaman data kelembaban tanah
     public function soilmoisture_index()
     {
         $soilmoistures = SoilMoisture::paginate(20);
         return view('farmer.soilmoisture.index', compact('soilmoistures'));
     }
 
+    // ? GET
+    // VIEW :: farmer.soilmoisture.show
+    // halaman data kelembaban tanah berdasarkan id mesin
     public function soilmoisture_show($machine_id)
     {
         $soilmoistures = SoilMoisture::where('machine_id', $machine_id)->paginate(20);
         return view('farmer.soilmoisture.show', compact('soilmoistures'));
     }
 
-    // 
-    // WEATHER
-    // 
+    // *-----------------------------------------------------------------------
+    // *     WEATHER
+    // *-----------------------------------------------------------------------
 
-    // view cuaca
+    // ? GET
+    // VIEW :: farmer.weather.index
+    // halaman data cuaca (hari ini)
     public function weather_index()
     {
         $magetanId = '501289';
-        // extends method from Controller::class
-        $weather = $this->extend__weather_getArea($magetanId);
-        if ($weather == null) {
+        $weather = Weather::area($magetanId);
+
+        if (is_null($weather)) {
             return redirect()->route('farmer.weather');
         }
 
-        return view('farmer.weather.index', compact('weather'));
+        $attributes = $weather['attributes'];
+        $humidity = $weather['humidity'];
+        $minHumidity = $weather['minHumidity']['timerange'][0]['value'];
+        $maxHumidity = $weather['maxHumidity']['timerange'][0]['value'];
+        $temperature = $weather['temperature'];
+        $minTemperature = $weather['minTemperature']['timerange'][0]['value'][0];
+        $maxTemperature = $weather['maxTemperature']['timerange'][0]['value'][0];
+
+        return view('farmer.weather.index', compact(['attributes','humidity','minHumidity','maxHumidity','temperature','minTemperature','maxTemperature']));
     }
 }

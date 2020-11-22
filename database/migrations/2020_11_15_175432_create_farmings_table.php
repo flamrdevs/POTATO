@@ -15,6 +15,7 @@ class CreateFarmingsTable extends Migration
     {
         Schema::create('farmings', function (Blueprint $table) {
             $table->increments('id');
+
             // $table->dateTime('start')->default(new DateTime());
             // $table->dateTime('end')->nullable();
             // $table->foreign('machine_id')->references('machine_id')->on('soilmoistures');

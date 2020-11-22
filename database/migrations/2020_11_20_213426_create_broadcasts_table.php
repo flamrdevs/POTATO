@@ -15,6 +15,10 @@ class CreateBroadcastsTable extends Migration
     {
         Schema::create('broadcasts', function (Blueprint $table) {
             $table->increments('id');
+            
+            $table->string('message', 511);
+            $table->boolean('deleted')->default(false);
+
             $table->timestamps();
         });
     }

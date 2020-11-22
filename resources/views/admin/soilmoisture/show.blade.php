@@ -31,7 +31,7 @@
               @foreach ($soilmoistures as $sm)
                 <tr>
                   <th scope="row" class="text-center">{{ $loop->iteration}}</th>
-                  <td>{{ $sm->created_at }}</td>
+                  <td>{{ $sm->timestamp }}</td>
                   <td>{{ $sm->value }}</td>
                 </tr>
               @endforeach

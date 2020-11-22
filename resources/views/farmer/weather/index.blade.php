@@ -1,14 +1,5 @@
 @extends('farmer.layout')
 
-<?php
-  $humidity = $weather['humidity'];
-  $minHumidity = $weather['minHumidity']['timerange'][0]['value'];
-  $maxHumidity = $weather['maxHumidity']['timerange'][0]['value'];
-  $temperature = $weather['temperature'];
-  $minTemperature = $weather['minTemperature']['timerange'][0]['value'][0];
-  $maxTemperature = $weather['maxTemperature']['timerange'][0]['value'][0];
-?>
-
 @section('main')
   <div class="container">
 
