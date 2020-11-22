@@ -12,168 +12,158 @@
 */
 
 // // ! DEV MODE ONLY \/
-// Route::get('/forcelogout', function ()
-// {
+// Route::get('/forcelogout', function() {
 //     Auth::logout();
 //     return redirect()->route('welcome');
 // });
 // // ! DEV MODE ONLY /\
 
-Route::view('/', 'welcome')->middleware('guest')->name('welcome');
+// Guest Route
+Route::view('/', 'welcome')->name('welcome');
 
-// Auth
-Route::get('login', 'AuthController@showLoginForm')->name('login');
+// Auth Route
+Route::get('login', 'AuthController@showLoginForm')->middleware('guest')->name('login');
 Route::post('login', 'AuthController@login');
 Route::post('logout', 'AuthController@logout')->name('logout');
 
-// Admin Dashboard
-Route::group(['prefix' => 'admin'], function ()
-{
-    Route::name('admin')->group(function()
-    {
+// Admin Route
+Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], function() {
+    Route::name('admin')->group(function() {
+        ///-----------------------------------------------------------------------------------------------------
 
-        // url : /admin
         Route::get('/', 'AdminController@index');
 
-        // url : /admin/profile
-        Route::group(['prefix' => 'profile'], function ()
-        {
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::group(['prefix' => 'profile'], function() {
+
             Route::get('/', 'AdminController@profile')->name('.profile');
             Route::get('/edit', 'AdminController@edit')->name('.edit');
             Route::get('/password', 'AdminController@password')->name('.password');
             Route::put('/update', 'AdminController@update')->name('.update');
             Route::put('/updatePassword', 'AdminController@updatePassword')->name('.updatePassword');
+
         });
 
-        // /___ A ++++
+        ///-----------------------------------------------------------------------------------------------------
 
-        Route::name('.broadcast')->group(function()
-        {
-            // url : /admin/broadcast
-            Route::group(['prefix' => 'broadcast'], function ()
-            {
+        Route::group(['prefix' => 'broadcast'], function() {
+            Route::name('.broadcast')->group(function() {
+
                 Route::get('/', 'AdminController@broadcast_index');
+
             });
         });
 
-        Route::name('.farming')->group(function()
-        {
-            // url : /admin/farming
-            Route::group(['prefix' => 'farming'], function ()
-            {
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::group(['prefix' => 'farming'], function() {
+            Route::name('.farming')->group(function() {
+
                 Route::get('/', 'AdminController@farming_index');
+
             });
         });
 
-        Route::name('.plant')->group(function()
-        {
-            // url : /admin/plant
-            Route::group(['prefix' => 'plant'], function ()
-            {
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::group(['prefix' => 'plant'], function() {
+            Route::name('.plant')->group(function() {
+
                 Route::get('/', 'AdminController@plant_index');
+
             });
         });
 
-        // /___ A ----
+        ///-----------------------------------------------------------------------------------------------------
 
-        Route::name('.farmer')->group(function()
-        {
-            // url : /admin/farmer
-            Route::group(['prefix' => 'farmer'], function ()
-            {
+        Route::group(['prefix' => 'farmer'], function() {
+            Route::name('.farmer')->group(function() {
+
                 Route::get('/', 'AdminController@farmer_index');
                 Route::get('/create', 'AdminController@farmer_create')->name('.create');
                 Route::post('/store', 'AdminController@farmer_store')->name('.store');
                 Route::get('/{id}', 'AdminController@farmer_show')->name('.show');
                 Route::get('/{id}/edit', 'AdminController@farmer_edit')->name('.edit');
                 Route::put('/{id}', 'AdminController@farmer_update')->name('.update');
+
             });
         });
 
-        Route::name('.soilmoisture')->group(function()
-        {
-            // url : /admin/soilmoisture
-            Route::group(['prefix' => 'soilmoisture'], function ()
-            {
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::group(['prefix' => 'soilmoisture'], function() {
+            Route::name('.soilmoisture')->group(function() {
+
                 Route::get('/', 'AdminController@soilmoisture_index');
                 Route::get('/{id}', 'AdminController@soilmoisture_show')->name('.show');
+
             });
         });
 
-        Route::name('.weather')->group(function()
-        {
-            // url : /admin/weather
-            Route::get('/weather', 'AdminController@weather_index');
-        });
-    });
+        ///-----------------------------------------------------------------------------------------------------
 
-    // fallback url : /admin/any
-    Route::fallback(function()
-    {
-        return redirect()->route('admin');
+        Route::get('/weather', 'AdminController@weather_index')->name('.weather');
+
+        ///-----------------------------------------------------------------------------------------------------
     });
 });
 
-// Farmer Dashboard
-Route::group(['prefix' => 'farmer'], function ()
-{
-    Route::name('farmer')->group(function()
-    {
+// Farmer Route
+Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], function() {
+    Route::name('farmer')->group(function() {
+        ///-----------------------------------------------------------------------------------------------------
 
-        // url : /farmer
         Route::get('/', 'FarmerController@index');
 
-        // url : /farmer/profile
-        Route::group(['prefix' => 'profile'], function ()
-        {
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::group(['prefix' => 'profile'], function() {
+
             Route::get('/', 'FarmerController@profile')->name('.profile');
             Route::get('/edit', 'FarmerController@edit')->name('.edit');
             Route::get('/password', 'FarmerController@password')->name('.password');
             Route::put('/update', 'FarmerController@update')->name('.update');
             Route::put('/updatePassword', 'FarmerController@updatePassword')->name('.updatePassword');
-        });
-
-        Route::name('.farmer')->group(function()
-        {
-            // url : /farmer/farmer
-            Route::group(['prefix' => 'farmer'], function ()
-            {
-                Route::get('/', 'FarmerController@farmer_index');
-            });
+            
         });
         
-        Route::name('.soilmoisture')->group(function()
-        {
-            // url : /farmer/soilmoisture
-            Route::group(['prefix' => 'soilmoisture'], function ()
-            {
-                Route::get('/', 'FarmerController@soilmoisture_index');
-                Route::get('/{id}', 'FarmerController@soilmoisture_show')->name('.show');
+        ///-----------------------------------------------------------------------------------------------------
+
+        
+        Route::group(['prefix' => 'farmer'], function() {
+            Route::name('.farmer')->group(function() {
+
+                Route::get('/', 'FarmerController@farmer_index');
+
             });
         });
 
-        Route::name('.weather')->group(function()
-        {
-            // url : /farmer/weather
-            Route::get('/weather', 'FarmerController@weather_index');
+        ///-----------------------------------------------------------------------------------------------------
+        
+        Route::group(['prefix' => 'soilmoisture'], function() {
+            Route::name('.soilmoisture')->group(function() {
+
+                Route::get('/', 'FarmerController@soilmoisture_index');
+                Route::get('/{id}', 'FarmerController@soilmoisture_show')->name('.show');
+
+            });
         });
-    });
 
-    // fallback url : /farmer/any
-    Route::fallback(function()
-    {
-        return redirect()->route('farmer');
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::get('/weather', 'FarmerController@weather_index')->name('.weather');
+
+        ///-----------------------------------------------------------------------------------------------------
     });
 });
 
-// API
-Route::group(['prefix' => 'api'], function ()
-{
+// API Route
+Route::group(['prefix' => 'api'], function() {
+
     Route::post('/soilmoisture', 'APIController@post');
+
 });
 
-// fallback url : /any
-Route::fallback(function()
-{
-    return redirect()->route('login');
-});
+// Fallback
+Route::fallback(function() { return redirect()->route('login'); });

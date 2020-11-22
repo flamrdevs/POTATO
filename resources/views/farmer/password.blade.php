@@ -11,9 +11,9 @@
 
     <div class="spacer-2"></div>
 
-    @if (session('password'))
+    @if (Session::has('failure'))
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        {{ session('password') }}
+        {{ Session::get('failure') }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

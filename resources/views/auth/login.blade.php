@@ -47,9 +47,11 @@
 
         <div class="card shadow-lg">
           <div class="card-body">
-            @if (Session::has('error'))
+
+            {{-- Session Flash --}}
+            @if (Session::has('failure'))
               <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>{{ Session::get('error') }}</strong>
+                <strong>{{ Session::get('failure') }}</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -88,6 +90,7 @@
               </div>
               
             </form>
+            
           </div>
         </div>
       </div>

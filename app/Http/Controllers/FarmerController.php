@@ -19,14 +19,10 @@ use App\Weather;
 
 class FarmerController extends Controller
 {
-    // ? CONSTRUCT
-    public function __construct()
-    {
-        // Middleware
-        // 1. Apakah sudah terautentikasi
-        // 2. Apakah role user adalah farmer
-        $this->middleware(['auth','role:farmer']);
-    }
+
+    ///___------------------___///
+    ///.__ FarmerController __.///
+    ///..____________________..///
 
     // *-----------------------------------------------------------------------
     // *     HOME
@@ -89,7 +85,7 @@ class FarmerController extends Controller
         if ($user->save()) {
             Session::flash('success','Data berhasil diperbarui');
         } else {
-            Session::flash('error','Data gagal diperbarui');
+            Session::flash('failure','Data gagal diperbarui');
         }
 
         return view('farmer.profile', compact('user'));
@@ -111,14 +107,14 @@ class FarmerController extends Controller
         if (Hash::check($request->currentPassword, $user->password)) {
             $user->password = Hash::make($request->password);
         } else {
-            Session::flash('password','Password saat ini salah');
+            Session::flash('failure','Password saat ini salah');
             return redirect()->route('farmer.password')->withErrors($validator)->withInput($request->all());
         }
         
         if ($user->save()) {
             Session::flash('success','Password berhasil diperbarui');
         } else {
-            Session::flash('error','Password gagal diperbarui');
+            Session::flash('failure','Password gagal diperbarui');
         }
 
         return view('farmer.profile', compact('user'));

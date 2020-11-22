@@ -12,20 +12,21 @@ use Hash;
 use Session;
 
 class AuthController extends Controller
-{   
-    // ? CONSTRUCT
-    public function __construct()
-    {
-        // Middleware
-        // 1. Apakah belum terautentikasi
-        $this->middleware('guest', ['only' => ['showLoginForm']]);
-    }
+{
+
+    ///___----------------___///
+    ///.__ AuthController __.///
+    ///..__________________..///
+
+    // *-----------------------------------------------------------------------
+    // *     LOGIN
+    // *-----------------------------------------------------------------------
 
     // ? GET
     // VIEW :: auth.login
     // halaman form masuk aplikasi
     public function showLoginForm()
-    {   
+    {
         return view('auth.login');
     }
     
@@ -42,7 +43,7 @@ class AuthController extends Controller
         if ($this->attemptLogin($request)) {
             return $this->redirectUser();
         } else {
-            Session::flash('error', 'Maaf username dan password anda tidak sesuai. Harap periksa kembali');
+            Session::flash('failure', 'Maaf username dan password anda tidak sesuai. Harap periksa kembali');
             return redirect()->route('login')->withInput($request->except('password'));
         }
     }
@@ -89,6 +90,10 @@ class AuthController extends Controller
                 return redirect()->route('welcome');
         }
     }
+
+    // *-----------------------------------------------------------------------
+    // *     LOGOUT
+    // *-----------------------------------------------------------------------
 
     // ? POST
     // ENDPOINT :: User auth

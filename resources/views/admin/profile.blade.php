@@ -11,18 +11,19 @@
 
     <div class="spacer-2"></div>
 
-    @if (session('success'))
+    {{-- Session Flash --}}
+    @if (Session::has('success'))
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
+        {{ Session::get('success') }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
     @endif
 
-    @if (session('error'))
+    @if (Session::has('failure'))
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
+        {{ Session::get('failure') }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -8,11 +8,15 @@ use App\SoilMoisture;
 
 class APIController extends Controller
 {
-    private $apiKey = 'mc.potato.app';
+    ///___---------------___///
+    ///.__ APIController __.///
+    ///.._________________..///
 
-    // 
-    // GET
-    // 
+    // *-----------------------------------------------------------------------
+    // *     SOIL MOISTURE CENSOR
+    // *-----------------------------------------------------------------------
+
+    private $apiKey = 'mc.potato.app';
 
     public function get()
     {
@@ -29,10 +33,6 @@ class APIController extends Controller
 
         // return response()->json($response, 200);
     }
-
-    // 
-    // POST
-    // 
 
     public function post(Request $request)
     {
