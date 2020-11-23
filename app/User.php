@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+// Framework
+use Illuminate\Support\Facades\Auth;
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -24,23 +27,23 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    ///____      ____///
-    ///___ METHOD ___///
-    ///____      ____///
+    // * ------------------------------------------------
+    // *    Methods
+    // * ------------------------------------------------
 
-    // Dapatkan pengguna yang telah terautentikasi
+    // Dapatkan User yang telah terautentikasi
     public static function auth()
     {
-        return User::find(Auth::user()->id);
+        return self::find(Auth::user()->id);
     }
 
-    // Dapatkan pengguna dengan role adalah farmer dengan parameter paginate
+    // Dapatkan User dengan role farmer dengan parameter paginate
     public static function farmer($paginate = false)
     {
         if (is_int($paginate)) {
-            return User::where('role','farmer')->paginate($paginate);
+            return self::where('role','farmer')->paginate($paginate);
         } else {
-            return User::where('role','farmer')->get();
+            return self::where('role','farmer')->get();
         }
     }
 }

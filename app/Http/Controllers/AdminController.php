@@ -17,7 +17,7 @@ use App\Farming;
 use App\Plant;
 use App\Weather;
 
-class AdminController extends Controller
+class AdminController extends BaseController
 {
 
     ///___-----------------___///
@@ -41,8 +41,7 @@ class AdminController extends Controller
     // halaman profile admin
     public function profile()
     {
-        $user = User::auth();
-        return view('admin.profile', compact('user'));
+        return view('admin.profile', ['user' => User::auth()]);
     }
 
     // ? GET
@@ -50,8 +49,7 @@ class AdminController extends Controller
     // halaman form ubah data admin
     public function edit()
     {
-        $user = User::auth();
-        return view('admin.edit', compact('user'));
+        return view('admin.edit', ['user' => User::auth()]);
     }
 
     // ? GET
@@ -70,19 +68,9 @@ class AdminController extends Controller
         $user = User::auth();
         
         $validator = $this->validateUpdateUser($request);
+        if ($validator->fails()) return redirect()->route('admin.edit')->withErrors($validator)->withInput($request->all());
 
-        if ($validator->fails()) {
-            return redirect()->route('admin.edit')->withErrors($validator)->withInput($request->all());
-        }
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
-        $user->birthDate = $request->birthDate;
-        $user->gender = $request->gender;
-
-        if ($user->save()) {
+        if ($this->attemptUpdateUser($request, $user)) {
             Session::flash('success','Data berhasil diperbarui');
         } else {
             Session::flash('failure','Data gagal diperbarui');
@@ -99,19 +87,14 @@ class AdminController extends Controller
         $user = User::auth();
 
         $validator = $this->validateUpdatePassword($request);
+        if ($validator->fails()) return redirect()->route('admin.password')->withErrors($validator)->withInput($request->all());
 
-        if ($validator->fails()) {
-            return redirect()->route('admin.password')->withErrors($validator)->withInput($request->all());
-        }
-
-        if (Hash::check($request->currentPassword, $user->password)) {
-            $user->password = Hash::make($request->password);
-        } else {
+        if (!Hash::check($request->currentPassword, $user->password)) {
             Session::flash('failure','Password saat ini salah');
             return redirect()->route('admin.password')->withErrors($validator)->withInput($request->all());
         }
-        
-        if ($user->save()) {
+
+        if ($this->attemptUpdatePassword($request, $user)) {
             Session::flash('success','Password berhasil diperbarui');
         } else {
             Session::flash('failure','Password gagal diperbarui');
@@ -125,14 +108,7 @@ class AdminController extends Controller
     // function validasi update data admin kecuali password
     private function validateUpdateUser($request)
     {
-        return Validator::make($request->all(), [
-            'name' => 'required|min:3|max:50',
-            'email' => 'required|email|unique:users,email,'.Auth::user()->id,
-        ], [
-            'name.required' => 'Nama harus di isi',
-            'email.required' => 'Email harus di isi',
-            'email.unique' => 'Email sudah terdaftar',
-        ]);
+        return self::ext_ValidateUpdateUser($request);
     }
 
     // ? SELF
@@ -140,22 +116,24 @@ class AdminController extends Controller
     // function validasi update data admin hanya password
     private function validateUpdatePassword($request)
     {
-        return Validator::make($request->all(), [
-            'currentPassword' => 'required|min:8',
-            'password' => 'required|min:8',
-            'password_confirmation' => 'required|min:8|same:password',
-        ], [
-            'currentPassword.required' => 'Password saat ini harus di isi',
-            'currentPassword.min' => 'Password minimal berisi 8 karakter',
-            'password.required' => 'Password baru harus di isi',
-            'password.min' => 'Password minimal berisi 8 karakter',
-            'password_confirmation.required' => 'Konfirmasi password harus di isi',
-            'password_confirmation.min' => 'Password minimal berisi 8 karakter',
-            'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
-        ]);
+        return self::ext_ValidateUpdatePassword($request);
     }
 
-    // /___ A ++++
+    // ? SELF
+    // SAVE ? User
+    // function update data admin kecuali password ke database
+    private function attemptUpdateUser($request, $user)
+    {
+        return self::ext_AttemptUpdateUser($request, $user);
+    }
+
+    // ? SELF
+    // SAVE ? User
+    // function update data admin hanya password ke database
+    private function attemptUpdatePassword($request, $user)
+    {
+        return self::ext_AttemptUpdatePassword($request, $user);
+    }
 
     // *-----------------------------------------------------------------------
     // *     BROADCAST
@@ -166,9 +144,7 @@ class AdminController extends Controller
     // halaman data siaran
     public function broadcast_index()
     {
-        $broadcasts = Broadcast::all();
-
-        return view('admin.broadcast.index', compact('broadcasts'));
+        return view('admin.broadcast.index', ['broadcasts' => Broadcast::all()]);
     }
 
     // ? POST
@@ -176,16 +152,14 @@ class AdminController extends Controller
     // api untuk menyimpan data siaran
     public function broadcast_store(Request $request)
     {
-        // $validator = $this->validateCreateBroadcast($request);
-        // if ($validator->fails()) {
-        //     return view('admin.broadcast.index')->withErrors($validator);
-        // }
+        $validator = $this->validateCreateBroadcast($request);
+        if ($validator->fails()) return view('admin.broadcast.index')->withErrors($validator);
 
-        // if ($this->attemptCreateBroadcast($request)) {
-        //     Session::flash('success', 'Data success');
-        // } else {
-        //     Session::flash('failure', 'Data failure');
-        // }
+        if ($this->attemptCreateBroadcast($request)) {
+            Session::flash('success', 'Data success');
+        } else {
+            Session::flash('failure', 'Data failure');
+        }
 
         return view('admin.broadcast.index');
     }
@@ -207,11 +181,7 @@ class AdminController extends Controller
     // function validasi data siaran
     private function validateCreateBroadcast($request)
     {
-        return Validator::make($request->all(), [
-            'message' => 'required',
-        ], [
-            'message.required' => 'Pesan harus di isi',
-        ]);
+        return self::ext_ValidateCreateBroadcast($request);
     }
 
     // ? SELF
@@ -219,9 +189,7 @@ class AdminController extends Controller
     // function tambah data siaran ke database
     private function attemptCreateBroadcast($request)
     {
-        return Broadcast::create([
-            'message' => $request->message
-        ])->save();
+        return self::ext_AttemptCreateBroadcast($request);
     }
 
     // *-----------------------------------------------------------------------
@@ -234,7 +202,6 @@ class AdminController extends Controller
     public function farming_index()
     {
         // $farmings = Farming::all();
-
         return view('admin.farming.index');
     }
 
@@ -252,9 +219,7 @@ class AdminController extends Controller
     public function farming_store(Request $request)
     {
         $validator = $this->validateCreateFarming($request);
-        if ($validator->fails()) {
-            return view('admin.farming.index')->withErrors($validator);
-        }
+        if ($validator->fails()) return view('admin.farming.index')->withErrors($validator);
 
         if ($this->attemptCreateFarming($request)) {
             Session::flash('success', 'Data success');
@@ -270,13 +235,7 @@ class AdminController extends Controller
     // function validasi data bertani
     private function validateCreateFarming($request)
     {
-        return Validator::make($request->all(), [
-            'name' => 'required',
-            'minHumidity' => 'required'
-        ], [
-            'name.required' => 'Pesan harus di isi',
-            'minHumidity.required' => 'Data kelembaban minimal harus diisi'
-        ]);
+        return self::ext_ValidateCreateFarming($request);
     }
 
     // ? SELF
@@ -284,9 +243,7 @@ class AdminController extends Controller
     // function tambah data bertani ke database
     private function attemptCreateFarming($request)
     {
-        return Farming::create([
-
-        ])->save();
+        return self::ext_AttemptCreateFarming($request);
     }
 
     // *-----------------------------------------------------------------------
@@ -298,9 +255,7 @@ class AdminController extends Controller
     // halaman data tanaman
     public function plant_index()
     {
-        $plants = Plant::all();
-
-        return view('admin.plant.index', compact('plants'));
+        return view('admin.plant.index', ['plants' => Plant::all()]);
     }
 
     // ? GET
@@ -317,9 +272,7 @@ class AdminController extends Controller
     public function plant_store(Request $request)
     {
         $validator = $this->validateCreatePlant($request);
-        if ($validator->fails()) {
-            return view('admin.plant.index')->withErrors($validator);
-        }
+        if ($validator->fails()) return view('admin.plant.index')->withErrors($validator);
 
         if ($this->attemptCreatePlant($request)) {
             Session::flash('success', 'Data success');
@@ -335,13 +288,7 @@ class AdminController extends Controller
     // function validasi data tanaman
     private function validateCreatePlant($request)
     {
-        return Validator::make($request->all(), [
-            'name' => 'required',
-            'minHumidity' => 'required'
-        ], [
-            'name.required' => 'Pesan harus di isi',
-            'minHumidity.required' => 'Data kelembaban minimal harus diisi'
-        ]);
+        return self::ext_ValidateCreatePlant($request);
     }
 
     // ? SELF
@@ -349,13 +296,8 @@ class AdminController extends Controller
     // function tambah data tanaman ke database
     private function attemptCreatePlant($request)
     {
-        return Plant::create([
-            'name' => $request->name,
-            'minHumidity' => $request->minHumidity
-        ])->save();
+        return self::ext_AttemptCreatePlant($request);
     }
-
-    // /___ A ----
 
     // *-----------------------------------------------------------------------
     // *     FARMER
@@ -366,8 +308,7 @@ class AdminController extends Controller
     // halaman data petani
     public function farmer_index()
     {
-        $farmers = User::farmer(10);
-        return view('admin.farmer.index', compact('farmers'));
+        return view('admin.farmer.index', ['farmers' => User::farmer(10)]);
     }
 
     // ? GET
@@ -384,16 +325,15 @@ class AdminController extends Controller
     public function farmer_store(Request $request)
     {
         $validator = $this->validateCreateFarmer($request);
-        if ($validator->fails()) {
-            return redirect()->route('admin.farmer.create')->withErrors($validator)->withInput($request->except('password_confirmation'));
-        }
+        if ($validator->fails()) return redirect()->route('admin.farmer.create')->withErrors($validator)->withInput($request->except('password_confirmation'));
 
         if ($this->attemptCreateFarmer($request)) {
             Session::flash('success', 'Data petani berhasil dibuat');
-            return redirect()->route('admin.farmer');
         } else {
-            return redirect()->route('admin.farmer.create');
+            Session::flash('failure', 'Data failure');
         }
+
+        return redirect()->route('admin.farmer');
     }
 
     // ? GET
@@ -402,9 +342,7 @@ class AdminController extends Controller
     public function farmer_show($id)
     {
         $farmer = User::find($id);
-        if ($farmer->role != 'farmer') {
-            return redirect()->route('admin.farmer');
-        }
+        if ($farmer->role != 'farmer') return redirect()->route('admin.farmer');
         return view('admin.farmer.show', compact('farmer'));
     }
 
@@ -414,9 +352,7 @@ class AdminController extends Controller
     public function farmer_edit($id)
     {
         $farmer = User::find($id);
-        if ($farmer->role != 'farmer') {
-            return redirect()->route('admin.farmer');
-        }
+        if ($farmer->role != 'farmer') return redirect()->route('admin.farmer');
         return view('admin.farmer.edit', compact('farmer'));
     }
 
@@ -426,24 +362,18 @@ class AdminController extends Controller
     public function farmer_update(Request $request, $id)
     {
         $user = User::find($id);
-        if ($user->role != 'farmer') {
-            return redirect()->route('admin.farmer');
-        }
+        if ($user->role != 'farmer') return redirect()->route('admin.farmer');
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
-        $user->birthDate = $request->birthDate;
-        $user->gender = $request->gender;
+        $validator = $this->validateUpdateUser($request);
+        if ($validator->fails()) return redirect()->route('admin.farmer.edit')->withErrors($validator)->withInput($request->all());
 
-        if ($user->save()) {
+        if ($this->attemptUpdateUser($request, $user)) {
             Session::flash('success','Data berhasil diperbarui');
         } else {
             Session::flash('failure','Data gagal diperbarui');
         }
 
-        return redirect()->route('admin.farmer.show',['id' => $farmer->id]);
+        return redirect()->route('admin.farmer.show', ['id' => $farmer->id]);
     }
 
     // ? SELF
@@ -451,19 +381,7 @@ class AdminController extends Controller
     // function validasi data petani
     private function validateCreateFarmer($request)
     {
-        return Validator::make($request->all(), [
-            'name' => 'required|min:3|max:50',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
-            'password_confirmation' => 'required|min:8|same:password',
-        ], [
-            'name.required' => 'Nama harus di isi',
-            'email.required' => 'Email harus di isi',
-            'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Password harus di isi',
-            'password_confirmation.required' => 'Konfirmasi password harus di isi',
-            'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
-        ]);
+        return self::ext_ValidateCreateFarmer($request);
     }
 
     // ? SELF
@@ -471,16 +389,7 @@ class AdminController extends Controller
     // function tambah data petani ke database
     private function attemptCreateFarmer($request)
     {
-        return User::create([
-            'name' => ucwords(strtolower($request->name)),
-            'email' => strtolower($request->email),
-            'password' => Hash::make($request->password),
-            'birthDate' => $request->birthDate,
-            'gender' => strtolower($request->gender),
-            'phone' => strtolower($request->phone),
-            'address' => $request->address,
-            'role' => strtolower('farmer')
-        ])->save();
+        return self::ext_AttemptCreateFarmer($request);
     }
 
     // *-----------------------------------------------------------------------
@@ -492,8 +401,7 @@ class AdminController extends Controller
     // halaman data kelembaban tanah
     public function soilmoisture_index()
     {
-        $soilmoistures = SoilMoisture::paginate(20);
-        return view('admin.soilmoisture.index', compact('soilmoistures'));
+        return view('admin.soilmoisture.index', ['soilmoistures' => SoilMoisture::paginate(20)]);
     }
 
     // ? GET
@@ -501,8 +409,7 @@ class AdminController extends Controller
     // halaman data kelembaban tanah berdasarkan id mesin
     public function soilmoisture_show($machine_id)
     {
-        $soilmoistures = SoilMoisture::where('machine_id', $machine_id)->paginate(20);
-        return view('admin.soilmoisture.show', compact('soilmoistures'));
+        return view('admin.soilmoisture.show', ['soilmoistures' => SoilMoisture::where('machine_id', $machine_id)->paginate(20)]);
     }
 
     // *-----------------------------------------------------------------------
@@ -517,17 +424,15 @@ class AdminController extends Controller
         $magetanId = '501289';
         $weather = Weather::area($magetanId);
 
-        if ($weather == null) {
-            return redirect()->route('admin.weather');
-        }
+        if (is_null($weather)) return redirect()->route('admin.weather');
 
-        $attributes = $weather['attributes'];
-        $humidity = $weather['humidity'];
-        $minHumidity = $weather['minHumidity']['timerange'][0]['value'];
-        $maxHumidity = $weather['maxHumidity']['timerange'][0]['value'];
-        $temperature = $weather['temperature'];
-        $minTemperature = $weather['minTemperature']['timerange'][0]['value'][0];
-        $maxTemperature = $weather['maxTemperature']['timerange'][0]['value'][0];
+        $attributes = Weather::getAttributesFrom($weather);
+        $humidity = Weather::getHumidityFrom($weather);
+        $minHumidity = Weather::getMinHumidityFrom($weather);
+        $maxHumidity = Weather::getMaxHumidityFrom($weather);
+        $temperature = Weather::getTemperatureFrom($weather);
+        $minTemperature = Weather::getMinTemperatureFrom($weather);
+        $maxTemperature = Weather::getMaxTemperatureFrom($weather);
 
         return view('admin.weather.index', compact(['attributes','humidity','minHumidity','maxHumidity','temperature','minTemperature','maxTemperature']));
     }

@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], funct
             Route::name('.broadcast')->group(function() {
 
                 Route::get('/', 'AdminController@broadcast_index');
+                Route::get('/create', 'AdminController@broadcast_create')->name('.create');
 
             });
         });

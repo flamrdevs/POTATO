@@ -17,7 +17,7 @@ use App\Farming;
 use App\Plant;
 use App\Weather;
 
-class FarmerController extends Controller
+class FarmerController extends BaseController
 {
 
     ///___------------------___///
@@ -41,8 +41,7 @@ class FarmerController extends Controller
     // halaman profile petani
     public function profile()
     {
-        $user = User::auth();
-        return view('farmer.profile', compact('user'));
+        return view('farmer.profile', ['user' => User::auth()]);
     }
 
     // ? GET
@@ -50,8 +49,7 @@ class FarmerController extends Controller
     // halaman form ubah data petani
     public function edit()
     {
-        $user = User::auth();
-        return view('farmer.edit', compact('user'));
+        return view('farmer.edit', ['user' => User::auth()]);
     }
 
     // ? GET
@@ -70,19 +68,9 @@ class FarmerController extends Controller
         $user = User::auth();
         
         $validator = $this->validateUpdateUser($request);
+        if ($validator->fails()) return redirect()->route('farmer.edit')->withErrors($validator)->withInput($request->all());
 
-        if ($validator->fails()) {
-            return redirect()->route('farmer.edit')->withErrors($validator)->withInput($request->all());
-        }
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
-        $user->birthDate = $request->birthDate;
-        $user->gender = $request->gender;
-
-        if ($user->save()) {
+        if ($this->attemptUpdateUser($request, $user)) {
             Session::flash('success','Data berhasil diperbarui');
         } else {
             Session::flash('failure','Data gagal diperbarui');
@@ -99,19 +87,14 @@ class FarmerController extends Controller
         $user = User::auth();
 
         $validator = $this->validateUpdatePassword($request);
+        if ($validator->fails()) return redirect()->route('farmer.password')->withErrors($validator)->withInput($request->all());
 
-        if ($validator->fails()) {
-            return redirect()->route('farmer.password')->withErrors($validator)->withInput($request->all());
-        }
-
-        if (Hash::check($request->currentPassword, $user->password)) {
-            $user->password = Hash::make($request->password);
-        } else {
+        if (!Hash::check($request->currentPassword, $user->password)) {
             Session::flash('failure','Password saat ini salah');
             return redirect()->route('farmer.password')->withErrors($validator)->withInput($request->all());
         }
         
-        if ($user->save()) {
+        if ($this->attemptUpdatePassword($request, $user)) {
             Session::flash('success','Password berhasil diperbarui');
         } else {
             Session::flash('failure','Password gagal diperbarui');
@@ -125,14 +108,7 @@ class FarmerController extends Controller
     // function validasi update data petani kecuali password
     private function validateUpdateUser($request)
     {
-        return Validator::make($request->all(), [
-            'name' => 'required|min:3|max:50',
-            'email' => 'required|email|unique:users,email,'.Auth::user()->id,
-        ], [
-            'name.required' => 'Nama harus di isi',
-            'email.required' => 'Email harus di isi',
-            'email.unique' => 'Email sudah terdaftar',
-        ]);
+        return self::ext_ValidateUpdateUser($request);
     }
 
     // ? SELF
@@ -140,19 +116,23 @@ class FarmerController extends Controller
     // function validasi update data petani hanya password
     private function validateUpdatePassword($request)
     {
-        return Validator::make($request->all(), [
-            'currentPassword' => 'required|min:8',
-            'password' => 'required|min:8',
-            'password_confirmation' => 'required|min:8|same:password',
-        ], [
-            'currentPassword.required' => 'Password saat ini harus di isi',
-            'currentPassword.min' => 'Password minimal berisi 8 karakter',
-            'password.required' => 'Password baru harus di isi',
-            'password.min' => 'Password minimal berisi 8 karakter',
-            'password_confirmation.required' => 'Konfirmasi password harus di isi',
-            'password_confirmation.min' => 'Password minimal berisi 8 karakter',
-            'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
-        ]);
+        return self::ext_ValidateUpdatePassword($request);
+    }
+
+    // ? SELF
+    // SAVE ? User
+    // function update data petani kecuali password ke database
+    private function attemptUpdateUser($request, $user)
+    {
+        return self::ext_AttemptUpdateUser($request, $user);
+    }
+
+    // ? SELF
+    // SAVE ? User
+    // function update data petani hanya password ke database
+    private function attemptUpdatePassword($request, $user)
+    {
+        return self::ext_AttemptUpdatePassword($request, $user);
     }
 
     // *-----------------------------------------------------------------------
@@ -164,8 +144,7 @@ class FarmerController extends Controller
     // halaman data petani
     public function farmer_index()
     {
-        $farmers = User::farmer(10);
-        return view('farmer.farmer.index', compact('farmers'));
+        return view('farmer.farmer.index', ['farmers' => User::farmer(10)]);
     }
 
     // *-----------------------------------------------------------------------
@@ -177,8 +156,7 @@ class FarmerController extends Controller
     // halaman data kelembaban tanah
     public function soilmoisture_index()
     {
-        $soilmoistures = SoilMoisture::paginate(20);
-        return view('farmer.soilmoisture.index', compact('soilmoistures'));
+        return view('farmer.soilmoisture.index', ['soilmoistures' => SoilMoisture::paginate(20)]);
     }
 
     // ? GET
@@ -186,8 +164,7 @@ class FarmerController extends Controller
     // halaman data kelembaban tanah berdasarkan id mesin
     public function soilmoisture_show($machine_id)
     {
-        $soilmoistures = SoilMoisture::where('machine_id', $machine_id)->paginate(20);
-        return view('farmer.soilmoisture.show', compact('soilmoistures'));
+        return view('farmer.soilmoisture.show', ['soilmoistures' => SoilMoisture::where('machine_id', $machine_id)->paginate(20)]);
     }
 
     // *-----------------------------------------------------------------------
@@ -202,17 +179,15 @@ class FarmerController extends Controller
         $magetanId = '501289';
         $weather = Weather::area($magetanId);
 
-        if (is_null($weather)) {
-            return redirect()->route('farmer.weather');
-        }
+        if (is_null($weather)) return redirect()->route('farmer.weather');
 
-        $attributes = $weather['attributes'];
-        $humidity = $weather['humidity'];
-        $minHumidity = $weather['minHumidity']['timerange'][0]['value'];
-        $maxHumidity = $weather['maxHumidity']['timerange'][0]['value'];
-        $temperature = $weather['temperature'];
-        $minTemperature = $weather['minTemperature']['timerange'][0]['value'][0];
-        $maxTemperature = $weather['maxTemperature']['timerange'][0]['value'][0];
+        $attributes = Weather::getAttributesFrom($weather);
+        $humidity = Weather::getHumidityFrom($weather);
+        $minHumidity = Weather::getMinHumidityFrom($weather);
+        $maxHumidity = Weather::getMaxHumidityFrom($weather);
+        $temperature = Weather::getTemperatureFrom($weather);
+        $minTemperature = Weather::getMinTemperatureFrom($weather);
+        $maxTemperature = Weather::getMaxTemperatureFrom($weather);
 
         return view('farmer.weather.index', compact(['attributes','humidity','minHumidity','maxHumidity','temperature','minTemperature','maxTemperature']));
     }

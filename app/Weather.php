@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+// Framework
 use Storage;
 
 class Weather extends Model
@@ -22,14 +23,14 @@ class Weather extends Model
         'weather'
     ];
 
-    ///____      ____///
-    ///___ METHOD ___///
-    ///____      ____///
+    // * ------------------------------------------------
+    // *    Methods
+    // * ------------------------------------------------
 
     // Dapatkan cuaca hari ini berdasarkan id area
     public static function area($id)
     {
-        $weather = Weather::where('idArea', $id)->whereDate('created_at', '=', date('Y-m-d'))->first();
+        $weather = self::where('idArea', $id)->whereDate('created_at', '=', date('Y-m-d'))->first();
         if (is_null($weather)) {
             $xml = Storage::get('DigitalForecast-JawaTimur.xml');
             $data = json_decode(json_encode(simplexml_load_string($xml)), true);
@@ -50,7 +51,7 @@ class Weather extends Model
                 $parameters[$value['@attributes']['id']] = $value;
             }
             // create weather
-            Weather::create([
+            self::create([
                 'idArea' => $id,
                 'attributes' => json_encode($attributes),
                 'humidity' => json_encode($parameters['hu']),
@@ -72,5 +73,47 @@ class Weather extends Model
             json_decode($weather, true);
         }
         return $weather;
+    }
+
+    // Dapatkan data attributes dari return value area()
+    public static function getAttributesFrom($weather)
+    {
+        return $weather['attributes'];
+    }
+
+    // Dapatkan data kelembaban udara 3 hari kedepan dari return value area()
+    public static function getHumidityFrom($weather)
+    {
+        return $weather['humidity'];
+    }
+
+    // Dapatkan data minimal kelembaban udara hari ini dari return value area()
+    public static function getMinHumidityFrom($weather)
+    {
+        return $weather['minHumidity']['timerange'][0]['value'];
+    }
+
+    // Dapatkan data maksimal kelembaban udara hari ini dari return value area()
+    public static function getMaxHumidityFrom($weather)
+    {
+        return $weather['maxHumidity']['timerange'][0]['value'];
+    }
+
+    // Dapatkan data suhu udara 3 hari kedepan dari return value area()
+    public static function getTemperatureFrom($weather)
+    {
+        return $weather['temperature'];
+    }
+
+    // Dapatkan data minimal suhu udara (celcius) hari ini dari return value area()
+    public static function getMinTemperatureFrom($weather)
+    {
+        return $weather['minTemperature']['timerange'][0]['value'][0];
+    }
+
+    // Dapatkan data maksimal suhu udara (celcius) hari ini dari return value area()
+    public static function getMaxTemperatureFrom($weather)
+    {
+        return $weather['maxTemperature']['timerange'][0]['value'][0];
     }
 }
