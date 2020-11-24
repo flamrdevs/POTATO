@@ -14,12 +14,16 @@ class BroadcastsTableSeeder extends Seeder
     public function run()
     {
         $broadcasts = [
-            ['message' => 'Broadcast A'],
-            ['message' => 'Broadcast B'],
-            ['message' => 'Broadcast C'],
-            ['message' => 'Broadcast D'],
-            ['message' => 'Broadcast E'],
-            ['message' => 'Broadcast F'],
+            ['message' => 'Siaran A'],
+            ['message' => 'Siaran B'],
+            ['message' => 'Siaran C'],
+            ['message' => 'Siaran D'],
+            ['message' => 'Siaran E'],
+            ['message' => 'Siaran F'],
+            ['message' => 'Siaran G'],
+            ['message' => 'Siaran H'],
+            ['message' => 'Siaran I'],
+            ['message' => 'Siaran J'],
         ];
 
         foreach ($broadcasts as $broadcast) {

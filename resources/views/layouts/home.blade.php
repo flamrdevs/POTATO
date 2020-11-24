@@ -52,7 +52,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
-          <a class="btn btn-primary" type="button" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Ya</a>
+          <a class="btn btn-primary" role="button" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Ya</a>
           <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             {{ csrf_field() }}
           </form>

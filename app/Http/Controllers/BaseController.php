@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 // Framework
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use Hash;
 
 // Model
 use App\User;
@@ -56,11 +57,11 @@ class BaseController extends Controller
         ])->save();
     }
 
-    protected static function ext_ValidateUpdateUser($request)
+    protected static function ext_ValidateUpdateUser($request, $user)
     {
         return Validator::make($request->all(), [
             'name' => 'required|min:3|max:50',
-            'email' => 'required|email|unique:users,email,'.Auth::user()->id,
+            'email' => 'required|email|unique:users,email,'.$user->id,
         ], [
             'name.required' => 'Nama harus di isi',
             'email.required' => 'Email harus di isi',
@@ -128,7 +129,7 @@ class BaseController extends Controller
     // *     BROADCAST
     // *-----------------------------------------------------------------------
 
-    protected static function ext_ValidateCreateBroadcast($request)
+    protected static function ext_ValidateCreateUpdateBroadcast($request)
     {
         return Validator::make($request->all(), [
             'message' => 'required',
@@ -143,19 +144,25 @@ class BaseController extends Controller
             'message' => $request->message
         ])->save();
     }
+
+    protected static function ext_AttemptUpdateBroadcast($request, $broadcast)
+    {
+        $broadcast->message = $request->message;
+        return $broadcast->save();
+    }
     
     // *-----------------------------------------------------------------------
     // *     PLANT
     // *-----------------------------------------------------------------------
 
-    protected static function ext_ValidateCreatePlant($request)
+    protected static function ext_ValidateCreateUpdatePlant($request)
     {
         return Validator::make($request->all(), [
             'name' => 'required',
-            'minHumidity' => 'required'
+            // 'minHumidity' => 'required'
         ], [
-            'name.required' => 'Pesan harus di isi',
-            'minHumidity.required' => 'Data kelembaban minimal harus diisi'
+            'name.required' => 'Nama harus di isi',
+            // 'minHumidity.required' => 'Data kelembaban minimal harus diisi'
         ]);
     }
 
@@ -163,7 +170,13 @@ class BaseController extends Controller
     {
         return Plant::create([
             'name' => $request->name,
-            'minHumidity' => $request->minHumidity
+            'minHumidity' => 20.0
         ])->save();
+    }
+
+    protected static function ext_AttemptUpdatePlant($request, $plant)
+    {
+        $plant->name = $request->name;
+        return $plant->save();
     }
 }

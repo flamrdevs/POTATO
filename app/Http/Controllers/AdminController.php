@@ -67,7 +67,7 @@ class AdminController extends BaseController
     {
         $user = User::auth();
         
-        $validator = $this->validateUpdateUser($request);
+        $validator = $this->validateUpdateUser($request, $user);
         if ($validator->fails()) return redirect()->route('admin.edit')->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptUpdateUser($request, $user)) {
@@ -106,9 +106,9 @@ class AdminController extends BaseController
     // ? SELF
     // VALIDATE ? User
     // function validasi update data admin kecuali password
-    private function validateUpdateUser($request)
+    private function validateUpdateUser($request, $user)
     {
-        return self::ext_ValidateUpdateUser($request);
+        return self::ext_ValidateUpdateUser($request, $user);
     }
 
     // ? SELF
@@ -144,7 +144,15 @@ class AdminController extends BaseController
     // halaman data siaran
     public function broadcast_index()
     {
-        return view('admin.broadcast.index', ['broadcasts' => Broadcast::all()]);
+        return view('admin.broadcast.index', ['broadcasts' => Broadcast::latest()->paginate(10)]);
+    }
+
+    // ? GET
+    // VIEW :: admin.broadcast.create
+    // halaman form tambah data siaran
+    public function broadcast_create()
+    {
+        return view('admin.broadcast.create');
     }
 
     // ? POST
@@ -152,8 +160,8 @@ class AdminController extends BaseController
     // api untuk menyimpan data siaran
     public function broadcast_store(Request $request)
     {
-        $validator = $this->validateCreateBroadcast($request);
-        if ($validator->fails()) return view('admin.broadcast.index')->withErrors($validator);
+        $validator = $this->validateCreateUpdateBroadcast($request);
+        if ($validator->fails()) return view('admin.broadcast.create')->withErrors($validator);
 
         if ($this->attemptCreateBroadcast($request)) {
             Session::flash('success', 'Data success');
@@ -161,27 +169,62 @@ class AdminController extends BaseController
             Session::flash('failure', 'Data failure');
         }
 
-        return view('admin.broadcast.index');
+        return redirect()->route('admin.broadcast');
     }
 
-    // ? DELETE
-    // ENDPOINT :: Broadcast delete
-    // api untuk menghapus siaran (hapus hanya untuk petani)
-    public function broadcast_softDelete($id)
+    // ? GET
+    // VIEW :: admin.broadcast.show
+    // halaman detail siaran
+    public function broadcast_show($id)
     {
-        // $broadcast = Broadcast::find($id);
-        // $broadcast->deleted = true;
-        // $broadcast->save();
-
-        return view('admin.broadcast.index');
+        return view('admin.broadcast.show', ['broadcast' => Broadcast::findOrFail($id)]);
     }
+
+    // ? GET
+    // VIEW :: admin.broadcast.edit
+    // halaman form ubah data siaran
+    public function broadcast_edit($id)
+    {
+        return view('admin.broadcast.edit', ['broadcast' => Broadcast::findOrFail($id)]);
+    }
+
+    // ? PUT
+    // ENDPOINT :: Broadcast update
+    // api untuk update data siaran
+    public function broadcast_update(Request $request, $id)
+    {
+        $broadcast = Broadcast::findOrFail($id);
+
+        $validator = $this->validateCreateUpdateBroadcast($request);
+        if ($validator->fails()) return redirect()->route('admin.broadcast.edit')->withErrors($validator)->withInput($request->all());
+
+        if ($this->attemptUpdateBroadcast($request, $broadcast)) {
+            Session::flash('success','Data berhasil diperbarui');
+        } else {
+            Session::flash('failure','Data gagal diperbarui');
+        }
+
+        return redirect()->route('admin.broadcast.show', ['id' => $broadcast->id]);
+    }
+
+    // // ? DELETE
+    // // ENDPOINT :: Broadcast delete
+    // // api untuk menghapus siaran (hapus hanya untuk petani)
+    // public function broadcast_softDelete($id)
+    // {
+    //     // $broadcast = Broadcast::findOrFail($id);
+    //     // $broadcast->deleted = true;
+    //     // $broadcast->save();
+
+    //     return view('admin.broadcast.index');
+    // }
 
     // ? SELF
     // VALIDATE ? Broadcast
     // function validasi data siaran
-    private function validateCreateBroadcast($request)
+    private function validateCreateUpdateBroadcast($request)
     {
-        return self::ext_ValidateCreateBroadcast($request);
+        return self::ext_ValidateCreateUpdateBroadcast($request);
     }
 
     // ? SELF
@@ -190,6 +233,14 @@ class AdminController extends BaseController
     private function attemptCreateBroadcast($request)
     {
         return self::ext_AttemptCreateBroadcast($request);
+    }
+
+    // ? SELF
+    // SAVE ? Broadcast
+    // function update data siaran ke database
+    private function attemptUpdateBroadcast($request, $broadcast)
+    {
+        return self::ext_AttemptUpdateBroadcast($request, $broadcast);
     }
 
     // *-----------------------------------------------------------------------
@@ -227,7 +278,7 @@ class AdminController extends BaseController
             Session::flash('failure', 'Data failure');
         }
 
-        return view('admin.farming.index');
+        return redirect()->route('admin.broadcast');
     }
 
     // ? SELF
@@ -255,7 +306,7 @@ class AdminController extends BaseController
     // halaman data tanaman
     public function plant_index()
     {
-        return view('admin.plant.index', ['plants' => Plant::all()]);
+        return view('admin.plant.index', ['plants' => Plant::paginate(10)]);
     }
 
     // ? GET
@@ -271,8 +322,8 @@ class AdminController extends BaseController
     // api untuk menyimpan data tanaman
     public function plant_store(Request $request)
     {
-        $validator = $this->validateCreatePlant($request);
-        if ($validator->fails()) return view('admin.plant.index')->withErrors($validator);
+        $validator = $this->validateCreateUpdatePlant($request);
+        if ($validator->fails()) return view('admin.plant.create')->withErrors($validator);
 
         if ($this->attemptCreatePlant($request)) {
             Session::flash('success', 'Data success');
@@ -280,15 +331,50 @@ class AdminController extends BaseController
             Session::flash('failure', 'Data failure');
         }
 
-        return view('admin.plant.index');
+        return redirect()->route('admin.plant');
+    }
+
+    // ? GET
+    // VIEW :: admin.plant.show
+    // halaman detail tanaman
+    public function plant_show($id)
+    {
+        return view('admin.plant.show', ['plant' => Plant::findOrFail($id)]);
+    }
+
+    // ? GET
+    // VIEW :: admin.plant.edit
+    // halaman form ubah data tanaman
+    public function plant_edit($id)
+    {
+        return view('admin.plant.edit', ['plant' => Plant::findOrFail($id)]);
+    }
+
+    // ? PUT
+    // ENDPOINT :: Plant update
+    // api untuk update data tanaman
+    public function plant_update(Request $request, $id)
+    {
+        $plant = Plant::findOrFail($id);
+
+        $validator = $this->validateCreateUpdatePlant($request);
+        if ($validator->fails()) return redirect()->route('admin.plant.edit')->withErrors($validator)->withInput($request->all());
+
+        if ($this->attemptUpdatePlant($request, $plant)) {
+            Session::flash('success','Data berhasil diperbarui');
+        } else {
+            Session::flash('failure','Data gagal diperbarui');
+        }
+
+        return redirect()->route('admin.plant');
     }
 
     // ? SELF
     // VALIDATE ? Plant
     // function validasi data tanaman
-    private function validateCreatePlant($request)
+    private function validateCreateUpdatePlant($request)
     {
-        return self::ext_ValidateCreatePlant($request);
+        return self::ext_ValidateCreateUpdatePlant($request);
     }
 
     // ? SELF
@@ -297,6 +383,14 @@ class AdminController extends BaseController
     private function attemptCreatePlant($request)
     {
         return self::ext_AttemptCreatePlant($request);
+    }
+
+    // ? SELF
+    // SAVE ? Plant
+    // function update data tanaman ke database
+    private function attemptUpdatePlant($request, $plant)
+    {
+        return self::ext_AttemptUpdatePlant($request, $plant);
     }
 
     // *-----------------------------------------------------------------------
@@ -341,7 +435,7 @@ class AdminController extends BaseController
     // halaman detail petani
     public function farmer_show($id)
     {
-        $farmer = User::find($id);
+        $farmer = User::findOrFail($id);
         if ($farmer->role != 'farmer') return redirect()->route('admin.farmer');
         return view('admin.farmer.show', compact('farmer'));
     }
@@ -351,7 +445,7 @@ class AdminController extends BaseController
     // halaman form ubah data petani
     public function farmer_edit($id)
     {
-        $farmer = User::find($id);
+        $farmer = User::findOrFail($id);
         if ($farmer->role != 'farmer') return redirect()->route('admin.farmer');
         return view('admin.farmer.edit', compact('farmer'));
     }
@@ -361,13 +455,13 @@ class AdminController extends BaseController
     // api untuk update data petani
     public function farmer_update(Request $request, $id)
     {
-        $user = User::find($id);
-        if ($user->role != 'farmer') return redirect()->route('admin.farmer');
+        $farmer = User::findOrFail($id);
+        if ($farmer->role != 'farmer') return redirect()->route('admin.farmer');
 
-        $validator = $this->validateUpdateUser($request);
-        if ($validator->fails()) return redirect()->route('admin.farmer.edit')->withErrors($validator)->withInput($request->all());
+        $validator = $this->validateUpdateFarmer($request, $farmer);
+        if ($validator->fails()) return redirect()->route('admin.farmer.edit', ['id' => $farmer->id])->withErrors($validator)->withInput($request->all());
 
-        if ($this->attemptUpdateUser($request, $user)) {
+        if ($this->attemptUpdateUser($request, $farmer)) {
             Session::flash('success','Data berhasil diperbarui');
         } else {
             Session::flash('failure','Data gagal diperbarui');

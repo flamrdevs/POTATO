@@ -6,7 +6,7 @@
     <div class="spacer-2"></div>
 
     <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
-      <span class="h3 m-0">Cuaca</span>
+      <span class="h3 m-0">Data Cuaca</span>
     </nav>
 
     <div class="spacer-2"></div>

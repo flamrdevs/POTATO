@@ -52,6 +52,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], funct
 
                 Route::get('/', 'AdminController@broadcast_index');
                 Route::get('/create', 'AdminController@broadcast_create')->name('.create');
+                Route::post('/store', 'AdminController@broadcast_store')->name('.store');
+                Route::get('/{id}', 'AdminController@broadcast_show')->name('.show');
+                Route::get('/{id}/edit', 'AdminController@broadcast_edit')->name('.edit');
+                Route::put('/{id}', 'AdminController@broadcast_update')->name('.update');
 
             });
         });
@@ -72,6 +76,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], funct
             Route::name('.plant')->group(function() {
 
                 Route::get('/', 'AdminController@plant_index');
+                Route::get('/create', 'AdminController@plant_create')->name('.create');
+                Route::post('/store', 'AdminController@plant_store')->name('.store');
+                Route::get('/{id}', 'AdminController@plant_show')->name('.show');
+                Route::get('/{id}/edit', 'AdminController@plant_edit')->name('.edit');
+                Route::put('/{id}', 'AdminController@plant_update')->name('.update');
 
             });
         });

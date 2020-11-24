@@ -34,7 +34,7 @@ class User extends Authenticatable
     // Dapatkan User yang telah terautentikasi
     public static function auth()
     {
-        return self::find(Auth::user()->id);
+        return self::findOrFail(Auth::user()->id);
     }
 
     // Dapatkan User dengan role farmer dengan parameter paginate

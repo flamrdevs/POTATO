@@ -67,7 +67,7 @@ class FarmerController extends BaseController
     {
         $user = User::auth();
         
-        $validator = $this->validateUpdateUser($request);
+        $validator = $this->validateUpdateUser($request, $user);
         if ($validator->fails()) return redirect()->route('farmer.edit')->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptUpdateUser($request, $user)) {
@@ -106,9 +106,9 @@ class FarmerController extends BaseController
     // ? SELF
     // VALIDATE ? User
     // function validasi update data petani kecuali password
-    private function validateUpdateUser($request)
+    private function validateUpdateUser($request, $user)
     {
-        return self::ext_ValidateUpdateUser($request);
+        return self::ext_ValidateUpdateUser($request, $user);
     }
 
     // ? SELF
