@@ -137,6 +137,27 @@ Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], fun
             Route::put('/updatePassword', 'FarmerController@updatePassword')->name('.updatePassword');
             
         });
+
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::group(['prefix' => 'broadcast'], function() {
+            Route::name('.broadcast')->group(function() {
+
+                Route::get('/', 'FarmerController@broadcast_index');
+
+            });
+        });
+
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::group(['prefix' => 'plant'], function() {
+            Route::name('.plant')->group(function() {
+
+                Route::get('/', 'FarmerController@plant_index');
+                Route::get('/{id}', 'FarmerController@plant_show')->name('.show');
+
+            });
+        });
         
         ///-----------------------------------------------------------------------------------------------------
 

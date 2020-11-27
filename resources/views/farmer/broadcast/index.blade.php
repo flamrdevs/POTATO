@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('farmer.layout')
 
 @section('main')
   <div class="container">
@@ -13,7 +13,7 @@
 
     <div class="row">
 
-      <div class="col-lg-9">
+      <div class="col-sm-12">
         <div class="card shadow-sm">
           <div class="card-body">
 
@@ -29,8 +29,6 @@
                     @endif
                   </p>
                   <p class="card-text float-right">{{ $broadcast->created_at }}</p>
-
-                  <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.broadcast.edit',['id' => $broadcast->id]) }}" role="button">Edit</a>
                 </div>
               </div>
             @endforeach
@@ -42,16 +40,6 @@
               </nav>
             </div>
     
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-3">
-        <div class="card">
-          <div class="card-body">
-
-            <a class="btn btn-primary btn-sm" href="{{ route('admin.broadcast.create') }}" role="button">Siaran baru</a>
-            
           </div>
         </div>
       </div>

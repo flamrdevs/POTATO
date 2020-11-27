@@ -5,7 +5,7 @@
     <ul class="nav nav-pills flex-column">
 
       <li class="nav-item my-1">
-        <a class="nav-link {{ Request::is('admin') || Request::is('admin/profile*') ? 'active' : 'text-dark' }}" href="{{ route('admin') }}">Home</a>
+        <a class="nav-link {{ Request::is('admin') || Request::is('admin/profile*') ? 'active' : 'text-dark' }}" href="{{ route('admin') }}">Beranda</a>
       </li>
 
       <li class="nav-item my-1">

@@ -136,6 +136,38 @@ class FarmerController extends BaseController
     }
 
     // *-----------------------------------------------------------------------
+    // *     BROADCAST
+    // *-----------------------------------------------------------------------
+
+    // ? GET
+    // VIEW :: farmer.broadcast.index
+    // halaman data siaran
+    public function broadcast_index()
+    {
+        return view('farmer.broadcast.index', ['broadcasts' => Broadcast::latest()->paginate(10)]);
+    }
+
+    // *-----------------------------------------------------------------------
+    // *     PLANT
+    // *-----------------------------------------------------------------------
+
+    // ? GET
+    // VIEW :: farmer.plant.index
+    // halaman data tanaman
+    public function plant_index()
+    {
+        return view('farmer.plant.index', ['plants' => Plant::paginate(10)]);
+    }
+
+    // ? GET
+    // VIEW :: farmer.plant.show
+    // halaman detail tanaman
+    public function plant_show($id)
+    {
+        return view('farmer.plant.show', ['plant' => Plant::findOrFail($id)]);
+    }
+
+    // *-----------------------------------------------------------------------
     // *     FARMER
     // *-----------------------------------------------------------------------
 

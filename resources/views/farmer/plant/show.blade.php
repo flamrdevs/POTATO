@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('farmer.layout')
 
 @section('main')
   <div class="container">
@@ -6,7 +6,7 @@
     <div class="spacer-2"></div>
 
     <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
-      <span class="h3 m-0">Data Siaran</span>
+      <span class="h3 m-0">Data Tanaman</span>
     </nav>
 
     <div class="spacer-2"></div>
@@ -18,12 +18,10 @@
           <div class="card-body">
 
             @include('components.flashession')
-    
-            <div class="card my-3 mx-3">
-              <div class="card-body">
-                <p class="card-text">{{ $broadcast->message }}</p>
-                <p class="card-text float-right">{{ $broadcast->created_at }}</p>
-              </div>
+
+            <div class="form-group">
+              <label for="name">Nama</label>
+              <input type="text" class="form-control" id="name" name="name" value="{{ $plant->name }}" disabled>
             </div>
     
           </div>
@@ -32,11 +30,8 @@
 
       <div class="col-lg-3">
         <div class="card shadow-sm">
-          <div class="card-body">
-            <a class="btn btn-sm btn-primary" href="{{ route('admin.broadcast.edit',['id' => $broadcast->id]) }}" role="button">Edit</a>
-          </div>
           <div class="card-footer bg-light">
-            <a class="btn btn-sm btn-secondary" href="{{ route('admin.broadcast') }}" >Kembali</a>
+            <a class="btn btn-sm btn-secondary" href="{{ route('farmer.plant') }}" >Kembali</a>
           </div>
         </div>
       </div>

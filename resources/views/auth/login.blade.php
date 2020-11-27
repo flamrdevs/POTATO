@@ -8,16 +8,6 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
       <a class="navbar-brand p-0 my-0" href="{{ route('welcome') }}">{{ config('app.name') }}</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('welcome') }}">Welcome</a>
-          </li>
-        </ul>
-      </div>
     </div>
   </nav>
 
@@ -42,7 +32,7 @@
       <div class="col-sm-5 offset-sm-1">
 
         <div class="text-center mb-4">
-          <h1 class="text-light">Login</h1>
+          <h1 class="text-light">Masuk</h1>
         </div>
 
         <div class="card shadow-lg">
@@ -85,7 +75,7 @@
 
               <div class="form-group">
                 <div class="d-flex justify-content-center">
-                  <button type="submit" class="btn btn-primary">Login</button>
+                  <button type="submit" class="btn btn-primary">Masuk</button>
                 </div>
               </div>
               

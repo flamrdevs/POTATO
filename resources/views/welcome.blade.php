@@ -14,7 +14,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('login') }}">Login</a>
+            <a class="nav-link" href="{{ route('login') }}">Masuk</a>
           </li>
         </ul>
       </div>
@@ -26,7 +26,7 @@
     <div class="spacer-5"></div>
 
     <div class="jumbotron bg-light">
-      <h1 class="display-4">Welcome to POTATO</h1>
+      <h1 class="display-4">Selamat datang di POTATO</h1>
 
       <div class="spacer-2"></div>
 
@@ -39,7 +39,7 @@
         <div class="col-sm-5">
           <div class="card bg-light">
             <div class="card-body">
-              <a class="btn btn-primary btn-block btn-lg" href="{{ route('login') }}" role="button">Login</a>
+              <a class="btn btn-primary btn-block btn-lg" href="{{ route('login') }}" role="button">Masuk</a>
             </div>
           </div>
         </div>

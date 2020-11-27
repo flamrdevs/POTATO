@@ -13,7 +13,7 @@
 
     <div class="row">
 
-      <div class="col-sm-9">
+      <div class="col-lg-9">
         <div class="card shadow-sm">
           <div class="card-body">
 
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <div class="col-sm-3">
+      <div class="col-lg-3">
         <div class="card shadow-sm">
           <div class="card-body">
             <a class="btn btn-sm btn-primary" href="{{ route('admin.plant.edit',['id' => $plant->id]) }}" role="button">Edit</a>
