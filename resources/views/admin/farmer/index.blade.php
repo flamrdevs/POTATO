@@ -16,6 +16,8 @@
       <div class="col-lg-9">
         <div class="card shadow-sm">
           <div class="card-body">
+
+            @include('components.flashession')
     
             <div class="table-responsive">
               <table class="table table-hover table-bordered">

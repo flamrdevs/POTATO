@@ -24,11 +24,9 @@
                 <div class="card-body">
                   <p class="card-text text-wrap text-truncate">
                     {{ str_limit($broadcast->message, 150) }}
-                    @if (strlen($broadcast->message) > 150)
-                      <a class="btn btn-sm btn-link" href="{{ route('admin.broadcast.show',['id' => $broadcast->id]) }}" role="button">Detail</a>
-                    @endif
                   </p>
                   <p class="card-text float-right">{{ $broadcast->created_at }}</p>
+                  <a class="btn btn-sm btn-link" href="{{ route('farmer.broadcast.show',['id' => $broadcast->id]) }}" role="button">Detail</a>
                 </div>
               </div>
             @endforeach

@@ -24,7 +24,7 @@
         
               <div class="form-group">
                 <label for="message">Pesan</label>
-                <textarea class="form-control {{$errors->has('message') ? 'is-invalid' : ''}}" name="message" id="message" cols="30" rows="10" aria-describedby="messageFeedback">{{ $broadcast->message }}</textarea>
+                <textarea class="form-control {{$errors->has('message') ? 'is-invalid' : ''}}" name="message" id="message" cols="30" rows="10" aria-describedby="messageFeedback">{{ old('message') ? old('message') : $broadcast->message }}</textarea>
                 @if ($errors->has('message'))
                   <div id="messageFeedback" class="invalid-feedback">
                     <strong>{{ $errors->first('message') }}</strong>

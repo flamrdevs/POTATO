@@ -23,7 +23,7 @@
         
               <div class="form-group">
                 <label for="name">Nama</label>
-                <input type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" id="name" name="name" value="{{ $user->name }}" aria-describedby="nameFeedback">
+                <input type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" id="name" name="name" value="{{ old('name') ? old('name') : $user->name }}" aria-describedby="nameFeedback">
                 @if ($errors->has('name'))
                   <div id="nameFeedback" class="invalid-feedback">
                     <strong>{{ $errors->first('name') }}</strong>
@@ -33,7 +33,7 @@
         
               <div class="form-group">
                 <label for="email">E-Mail / Username</label>
-                <input type="email" class="form-control {{$errors->has('email') ? 'is-invalid' : ''}}" id="email" name="email" value="{{ $user->email }}" aria-describedby="emailFeedback">
+                <input type="email" class="form-control {{$errors->has('email') ? 'is-invalid' : ''}}" id="email" name="email" value="{{ old('email') ? old('email') : $user->email }}" aria-describedby="emailFeedback">
                 @if ($errors->has('email'))
                   <div id="emailFeedback" class="invalid-feedback">
                     <strong>{{ $errors->first('email') }}</strong>
@@ -43,7 +43,7 @@
     
               <div class="form-group">
                 <label for="phone">No Telepon</label>
-                <input type="text" class="form-control {{$errors->has('phone') ? 'is-invalid' : ''}}" id="phone" name="phone" value="{{ $user->phone }}" aria-describedby="phoneFeedback">
+                <input type="text" class="form-control {{$errors->has('phone') ? 'is-invalid' : ''}}" id="phone" name="phone" value="{{ old('phone') ? old('phone') : $user->phone }}" aria-describedby="phoneFeedback">
                 @if ($errors->has('phone'))
                   <div id="phoneFeedback" class="invalid-feedback">
                     <strong>{{ $errors->first('phone') }}</strong>
@@ -53,7 +53,7 @@
     
               <div class="form-group">
                 <label for="address">Alamat</label>
-                <input type="text" class="form-control {{$errors->has('address') ? 'is-invalid' : ''}}" id="address" name="address" value="{{ $user->address }}" aria-describedby="addressFeedback">
+                <input type="text" class="form-control {{$errors->has('address') ? 'is-invalid' : ''}}" id="address" name="address" value="{{ old('address') ? old('address') : $user->address }}" aria-describedby="addressFeedback">
                 @if ($errors->has('address'))
                   <div id="addressFeedback" class="invalid-feedback">
                     <strong>{{ $errors->first('address') }}</strong>
@@ -63,7 +63,7 @@
     
               <div class="form-group">
                 <label for="birthDate">Tanggal Lahir</label>
-                <input type="date" class="form-control {{$errors->has('birthDate') ? 'is-invalid' : ''}}" id="birthDate" name="birthDate" value="{{ $user->birthDate }}" aria-describedby="birthDateFeedback">
+                <input type="date" class="form-control {{$errors->has('birthDate') ? 'is-invalid' : ''}}" id="birthDate" name="birthDate" value="{{ old('birthDate') ? old('birthDate') : $user->birthDate }}" aria-describedby="birthDateFeedback">
                 @if ($errors->has('birthDate'))
                   <div id="birthDateFeedback" class="invalid-feedback">
                     <strong>{{ $errors->first('birthDate') }}</strong>

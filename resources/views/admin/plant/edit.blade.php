@@ -24,7 +24,7 @@
         
               <div class="form-group">
                 <label for="name">Nama</label>
-                <input type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" id="name" name="name" value="{{ $plant->name }}" aria-describedby="nameFeedback">
+                <input type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" id="name" name="name" value="{{ old('name') ? old('name') : $plant->name }}" aria-describedby="nameFeedback">
                 @if ($errors->has('name'))
                   <div id="nameFeedback" class="invalid-feedback">
                     <strong>{{ $errors->first('name') }}</strong>

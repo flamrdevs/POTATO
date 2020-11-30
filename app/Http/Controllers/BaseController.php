@@ -29,16 +29,21 @@ class BaseController extends Controller
     protected static function ext_ValidateCreateFarmer($request)
     {
         return Validator::make($request->all(), [
-            'name' => 'required|min:3|max:50',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
+            'name' => 'required|max:63',
+            'email' => 'required|email|max:63|unique:users,email',
+            'password' => 'required|min:8|max:63',
             'password_confirmation' => 'required|min:8|same:password',
         ], [
-            'name.required' => 'Nama harus di isi',
-            'email.required' => 'Email harus di isi',
+            'name.required' => 'Nama tidak boleh kosong',
+            'name.max' => 'Nama terlalu panjang',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.email' => 'Email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Password harus di isi',
-            'password_confirmation.required' => 'Konfirmasi password harus di isi',
+            'email.max' => 'Email terlalu panjang',
+            'password.required' => 'Password tidak boleh kosong',
+            'password.min' => 'Password terlalu pendek',
+            'password.max' => 'Password terlalu panjang',
+            'password_confirmation.required' => 'Konfirmasi password tidak boleh kosong',
             'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
         ]);
     }
@@ -60,29 +65,37 @@ class BaseController extends Controller
     protected static function ext_ValidateUpdateUser($request, $user)
     {
         return Validator::make($request->all(), [
-            'name' => 'required|min:3|max:50',
-            'email' => 'required|email|unique:users,email,'.$user->id,
+            'name' => 'required|max:63',
+            'email' => 'required|email|max:63|unique:users,email,'.$user->id,
+            'phone' => 'max:63',
+            'address' => 'max:63'
         ], [
-            'name.required' => 'Nama harus di isi',
-            'email.required' => 'Email harus di isi',
+            'name.required' => 'Nama tidak boleh kosong',
+            'name.max' => 'Nama terlalu panjang',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.email' => 'Email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
+            'email.max' => 'Email terlalu panjang',
+            'phone.max' => 'No Telepon terlalu panjang',
+            'address.max' => 'Alamat terlalu panjang',
         ]);
     }
 
     protected static function ext_ValidateUpdatePassword($request)
     {
         return Validator::make($request->all(), [
-            'currentPassword' => 'required|min:8',
+            'currentPassword' => 'required|min:8|max:63',
             'password' => 'required|min:8',
             'password_confirmation' => 'required|min:8|same:password',
         ], [
-            'currentPassword.required' => 'Password saat ini harus di isi',
+            'currentPassword.required' => 'Password saat ini tidak boleh kosong',
             'currentPassword.min' => 'Password minimal berisi 8 karakter',
-            'password.required' => 'Password baru harus di isi',
+            'currentPassword.max' => 'Password terlalu panjang',
+            'password.required' => 'Password baru tidak boleh kosong',
             'password.min' => 'Password minimal berisi 8 karakter',
-            'password_confirmation.required' => 'Konfirmasi password harus di isi',
+            'password_confirmation.required' => 'Konfirmasi password tidak boleh kosong',
             'password_confirmation.min' => 'Password minimal berisi 8 karakter',
-            'password_confirmation.same' => 'Password konfirmasi tidak sama dengan password',
+            'password_confirmation.same' => 'Konfirmasi password tidak sama dengan password saat ini',
         ]);
     }
 
@@ -107,23 +120,23 @@ class BaseController extends Controller
     // *     FARMING
     // *-----------------------------------------------------------------------
 
-    protected static function ext_ValidateCreateFarming($request)
-    {
-        return Validator::make($request->all(), [
-            'name' => 'required',
-            'minHumidity' => 'required'
-        ], [
-            'name.required' => 'Pesan harus di isi',
-            'minHumidity.required' => 'Data kelembaban minimal harus diisi'
-        ]);
-    }
+    // protected static function ext_ValidateCreateFarming($request)
+    // {
+    //     return Validator::make($request->all(), [
+    //         // 'name' => 'required',
+    //         // 'minHumidity' => 'required'
+    //     ], [
+    //         // 'name.required' => 'Pesan tidak boleh kosong',
+    //         // 'minHumidity.required' => 'Data kelembaban minimal tidak boleh kosong'
+    //     ]);
+    // }
 
-    protected static function ext_AttemptCreateFarming($request)
-    {
-        return Farming::create([
+    // protected static function ext_AttemptCreateFarming($request)
+    // {
+    //     return Farming::create([
 
-        ])->save();
-    }
+    //     ])->save();
+    // }
 
     // *-----------------------------------------------------------------------
     // *     BROADCAST
@@ -132,9 +145,10 @@ class BaseController extends Controller
     protected static function ext_ValidateCreateUpdateBroadcast($request)
     {
         return Validator::make($request->all(), [
-            'message' => 'required',
+            'message' => 'required|max:511|',
         ], [
-            'message.required' => 'Pesan harus di isi',
+            'message.required' => 'Pesan tidak boleh kosong',
+            'message.max' => 'Pesan terlalu panjang',
         ]);
     }
 
@@ -158,11 +172,12 @@ class BaseController extends Controller
     protected static function ext_ValidateCreateUpdatePlant($request)
     {
         return Validator::make($request->all(), [
-            'name' => 'required',
+            'name' => 'required|max:61',
             // 'minHumidity' => 'required'
         ], [
-            'name.required' => 'Nama harus di isi',
-            // 'minHumidity.required' => 'Data kelembaban minimal harus diisi'
+            'name.required' => 'Nama tidak boleh kosong',
+            'name.max' => 'Nama terlalu panjang',
+            // 'minHumidity.required' => 'Data kelembaban minimal tidak boleh kosong'
         ]);
     }
 

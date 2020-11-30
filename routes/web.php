@@ -144,6 +144,7 @@ Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], fun
             Route::name('.broadcast')->group(function() {
 
                 Route::get('/', 'FarmerController@broadcast_index');
+                Route::get('/{id}', 'FarmerController@broadcast_show')->name('.show');
 
             });
         });
@@ -162,13 +163,13 @@ Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], fun
         ///-----------------------------------------------------------------------------------------------------
 
         
-        Route::group(['prefix' => 'farmer'], function() {
-            Route::name('.farmer')->group(function() {
+        // Route::group(['prefix' => 'farmer'], function() {
+        //     Route::name('.farmer')->group(function() {
 
-                Route::get('/', 'FarmerController@farmer_index');
+        //         Route::get('/', 'FarmerController@farmer_index');
 
-            });
-        });
+        //     });
+        // });
 
         ///-----------------------------------------------------------------------------------------------------
         

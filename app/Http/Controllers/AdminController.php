@@ -161,7 +161,7 @@ class AdminController extends BaseController
     public function broadcast_store(Request $request)
     {
         $validator = $this->validateCreateUpdateBroadcast($request);
-        if ($validator->fails()) return view('admin.broadcast.create')->withErrors($validator);
+        if ($validator->fails()) return redirect()->route('admin.broadcast.create')->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptCreateBroadcast($request)) {
             Session::flash('success', 'Data success');
@@ -196,7 +196,7 @@ class AdminController extends BaseController
         $broadcast = Broadcast::findOrFail($id);
 
         $validator = $this->validateCreateUpdateBroadcast($request);
-        if ($validator->fails()) return redirect()->route('admin.broadcast.edit')->withErrors($validator)->withInput($request->all());
+        if ($validator->fails()) return redirect()->route('admin.broadcast.edit', ['id' => $id])->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptUpdateBroadcast($request, $broadcast)) {
             Session::flash('success','Data berhasil diperbarui');
@@ -270,7 +270,7 @@ class AdminController extends BaseController
     public function farming_store(Request $request)
     {
         $validator = $this->validateCreateFarming($request);
-        if ($validator->fails()) return view('admin.farming.index')->withErrors($validator);
+        if ($validator->fails()) return redirect()->route('admin.farming.index')->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptCreateFarming($request)) {
             Session::flash('success', 'Data success');
@@ -323,7 +323,7 @@ class AdminController extends BaseController
     public function plant_store(Request $request)
     {
         $validator = $this->validateCreateUpdatePlant($request);
-        if ($validator->fails()) return view('admin.plant.create')->withErrors($validator);
+        if ($validator->fails()) return redirect()->route('admin.plant.create')->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptCreatePlant($request)) {
             Session::flash('success', 'Data success');
@@ -358,7 +358,7 @@ class AdminController extends BaseController
         $plant = Plant::findOrFail($id);
 
         $validator = $this->validateCreateUpdatePlant($request);
-        if ($validator->fails()) return redirect()->route('admin.plant.edit')->withErrors($validator)->withInput($request->all());
+        if ($validator->fails()) return redirect()->route('admin.plant.edit', ['id' => $id])->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptUpdatePlant($request, $plant)) {
             Session::flash('success','Data berhasil diperbarui');
@@ -458,7 +458,7 @@ class AdminController extends BaseController
         $farmer = User::findOrFail($id);
         if ($farmer->role != 'farmer') return redirect()->route('admin.farmer');
 
-        $validator = $this->validateUpdateFarmer($request, $farmer);
+        $validator = $this->validateUpdateUser($request, $farmer);
         if ($validator->fails()) return redirect()->route('admin.farmer.edit', ['id' => $farmer->id])->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptUpdateUser($request, $farmer)) {

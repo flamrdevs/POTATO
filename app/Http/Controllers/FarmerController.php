@@ -147,6 +147,14 @@ class FarmerController extends BaseController
         return view('farmer.broadcast.index', ['broadcasts' => Broadcast::latest()->paginate(10)]);
     }
 
+    // ? GET
+    // VIEW :: farmer.broadcast.show
+    // halaman detail siaran
+    public function broadcast_show($id)
+    {
+        return view('farmer.broadcast.show', ['broadcast' => Broadcast::findOrFail($id)]);
+    }
+
     // *-----------------------------------------------------------------------
     // *     PLANT
     // *-----------------------------------------------------------------------
@@ -171,13 +179,13 @@ class FarmerController extends BaseController
     // *     FARMER
     // *-----------------------------------------------------------------------
 
-    // ? GET
-    // VIEW :: farmer.farmer.index
-    // halaman data petani
-    public function farmer_index()
-    {
-        return view('farmer.farmer.index', ['farmers' => User::farmer(10)]);
-    }
+    // // ? GET
+    // // VIEW :: farmer.farmer.index
+    // // halaman data petani
+    // public function farmer_index()
+    // {
+    //     return view('farmer.farmer.index', ['farmers' => User::farmer(10)]);
+    // }
 
     // *-----------------------------------------------------------------------
     // *     SOIL MOISTURE

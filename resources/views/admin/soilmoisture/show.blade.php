@@ -32,7 +32,7 @@
                 <tr>
                   <th scope="row" class="text-center">{{ $loop->iteration}}</th>
                   <td>{{ $sm->timestamp }}</td>
-                  <td>{{ $sm->value }}</td>
+                  <td>{{ $sm->value }}%</td>
                 </tr>
               @endforeach
             </tbody>

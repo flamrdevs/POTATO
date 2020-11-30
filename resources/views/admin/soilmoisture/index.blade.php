@@ -30,7 +30,7 @@
                   <th scope="row" class="text-center">{{ $loop->iteration}}</th>
                   <td>{{ $sm->timestamp }}</td>
                   <td><a class="btn btn-light" href="{{ route('admin.soilmoisture.show', ['machine_id' => $sm->machine_id]) }}" role="button">{{ $sm->machine_id }}</a></td>
-                  <td>{{ $sm->value }}</td>
+                  <td>{{ $sm->value }}%</td>
                 </tr>
               @endforeach
             </tbody>
