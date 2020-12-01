@@ -13,15 +13,17 @@
 
   <!-- Styles -->
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/style.css') }}" rel="stylesheet">
   {{-- <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"> --}}
-  <link href="{{ asset('css/bootstrap.theming.min.css') }}" rel="stylesheet">
+  {{-- <link href="{{ asset('css/bootstrap.theming.min.css') }}" rel="stylesheet"> --}}
   <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
+  <link href="{{ asset('webfonts/fontawesome-free-5.15.1-web/css/all.min.css') }}" rel="stylesheet">
 
   @yield('head')
   
 </head>
 
-<body @yield('bodyStyle')>
+<body @yield('bodyStyle') class="bg-light-low">
   @yield('body')
 
   <!-- Scripts -->

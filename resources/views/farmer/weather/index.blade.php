@@ -14,7 +14,7 @@
     <div class="row">
 
       <div class="col-sm-6">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm border-primary border-top-0 border-right-0 border-bottom-0">
           <div class="card-body">
             <table class="table table-sm table-borderless">
               <thead>
@@ -28,7 +28,7 @@
                   <th scope="row">
                     @foreach ($humidity['timerange'] as $hu)
                       @if (((int)date('H') - (int)$hu['@attributes']['h']) < 6)
-                        <p class="card-text">{{ $hu['value'] }}%</p>
+                        <p class="card-text h2">{{ $hu['value'] }}%</p>
                         @break
                       @endif
                     @endforeach
@@ -50,7 +50,7 @@
       </div>
 
       <div class="col-sm-6">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm border-primary border-top-0 border-right-0 border-bottom-0">
           <div class="card-body">
             <table class="table table-sm table-borderless">
               <thead>
@@ -64,7 +64,7 @@
                   <th scope="row">
                     @foreach ($temperature['timerange'] as $t)
                       @if (((int)date('H') - (int)$t['@attributes']['h']) < 6)
-                        <p class="card-text">{{ $t['value'][0] }}&#176;C</p>
+                        <p class="card-text h2">{{ $t['value'][0] }}&#176;C</p>
                         @break
                       @endif
                     @endforeach
@@ -143,6 +143,14 @@
         </div>
       </div>
 
+    </div>
+
+    <div class="spacer-2"></div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <p class="text-center text-dark">Data Source BMKG (Badan Meteorologi, Klimatologi, dan Geofisika)</p>
+      </div>
     </div>
 
   </div>
