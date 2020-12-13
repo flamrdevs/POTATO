@@ -13,4 +13,13 @@ class Watering extends Model
         'end',
         'farming_id'
     ];
+
+    // * ------------------------------------------------
+    // *    Methods
+    // * ------------------------------------------------
+    
+    public static function findByFarmingIdPaginate($id, $paginate = 10)
+    {
+        return self::where('farming_id', $id)->orderBy('start', 'DESC')->paginate($paginate);
+    }
 }

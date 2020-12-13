@@ -5,7 +5,7 @@
 
     <div class="spacer-2"></div>
 
-    <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
+    <nav class="navbar navbar-light bg-light text-dark border-width-1 border-primary border-left-only rounded shadow-sm">
       <span class="h3 m-0">Edit Profil Saya</span>
     </nav>
 

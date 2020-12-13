@@ -14,23 +14,20 @@ class SoilMoisturesTableSeeder extends Seeder
     public function run()
     {
         $soilmoistures = [
-            ['machine_id' => 'mcp.0001.11.20'],
-            ['machine_id' => 'mcp.0001.11.20'],
-
-            ['machine_id' => 'mcp.0002.11.20'],
-            ['machine_id' => 'mcp.0002.11.20'],
-            ['machine_id' => 'mcp.0002.11.20'],
-
-            ['machine_id' => 'mcp.0003.11.20'],
-            ['machine_id' => 'mcp.0003.11.20'],
-            ['machine_id' => 'mcp.0003.11.20'],
-            ['machine_id' => 'mcp.0003.11.20'],
-
-            ['machine_id' => 'mcp.0004.11.20'],
-            ['machine_id' => 'mcp.0004.11.20'],
-            ['machine_id' => 'mcp.0004.11.20'],
-            ['machine_id' => 'mcp.0004.11.20'],
-            ['machine_id' => 'mcp.0004.11.20'],
+            ['farming_id' => 1],
+            ['farming_id' => 1],
+            ['farming_id' => 2],
+            ['farming_id' => 2],
+            ['farming_id' => 2],
+            ['farming_id' => 3],
+            ['farming_id' => 3],
+            ['farming_id' => 3],
+            ['farming_id' => 3],
+            ['farming_id' => 4],
+            ['farming_id' => 4],
+            ['farming_id' => 4],
+            ['farming_id' => 4],
+            ['farming_id' => 4],
         ];
 
         foreach ($soilmoistures as $soilmoisture) {

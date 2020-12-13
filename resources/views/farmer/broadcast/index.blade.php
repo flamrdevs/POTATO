@@ -5,7 +5,7 @@
     
     <div class="spacer-2"></div>
 
-    <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
+    <nav class="navbar navbar-light bg-light text-dark border-width-1 border-primary border-left-only rounded shadow-sm">
       <span class="h3 m-0">Data Siaran</span>
     </nav>
 
@@ -20,7 +20,7 @@
             @include('components.flashession')
     
             @foreach ($broadcasts as $broadcast)
-              <div class="card my-3 mx-3">
+              <div class="card my-3 mx-3 shadow-sm">
                 <div class="card-body">
                   <p class="card-text text-wrap text-truncate">
                     {{ str_limit($broadcast->message, 150) }}

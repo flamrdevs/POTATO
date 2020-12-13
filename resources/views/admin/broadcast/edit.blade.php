@@ -5,7 +5,7 @@
 
     <div class="spacer-2"></div>
 
-    <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
+    <nav class="navbar navbar-light bg-light text-dark border-width-1 border-primary border-left-only rounded shadow-sm">
       <span class="h3 m-0">Edit Data Siaran</span>
     </nav>
 
@@ -46,7 +46,7 @@
             <a class="btn btn-sm btn-primary" role="button" onclick="event.preventDefault(); document.getElementById('edit-form').submit();">Simpan</a>
           </div>
           <div class="card-footer bg-light">
-            <a class="btn btn-sm btn-secondary" href="{{ route('admin.broadcast') }}" >Batal</a>
+            <a class="btn btn-sm btn-secondary" href="{{ route('admin.broadcast.show', ["id" => $broadcast->id]) }}" >Batal</a>
           </div>
         </div>
 

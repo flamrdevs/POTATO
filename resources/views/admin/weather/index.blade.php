@@ -5,7 +5,7 @@
 
     <div class="spacer-2"></div>
 
-    <nav class="navbar navbar-light bg-light border-width-1 border-primary border-left-only rounded text-dark shadow-sm">
+    <nav class="navbar navbar-light bg-light text-dark border-width-1 border-primary border-left-only rounded shadow-sm">
       <span class="h3 m-0">Data Cuaca</span>
     </nav>
 
@@ -99,7 +99,7 @@
                 @foreach ($humidity['timerange'] as $hu)
                   <tr>
                     <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                    <td>{{ date('H:00 - d-m-y', strtotime('+'.$hu['@attributes']['h'].' Hours'))}}</td>
+                    <td>{{ date('H:00 - d-m-y', strtotime('+'.$hu['@attributes']['h'].' Hours', strtotime('00:00:00 today')))}}</td>
                     <td>{{ $hu['value'] }}%</td>
                   </tr>
                 @endforeach
@@ -125,7 +125,7 @@
                 @foreach ($temperature['timerange'] as $t)
                   <tr>
                     <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                    <td>{{ date('H:00 - d-m-y', strtotime('+'.$t['@attributes']['h'].' Hours'))}}</td>
+                    <td>{{ date('H:00 - d-m-y', strtotime('+'.$t['@attributes']['h'].' Hours', strtotime('00:00:00 today')))}}</td>
                     <td>{{ $t['value'][0] }}&#176;C</td>
                   </tr>
                 @endforeach

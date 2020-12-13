@@ -14,6 +14,8 @@ class CreateWeathersTable extends Migration
     public function up()
     {
         Schema::create('weathers', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+
             $table->increments('id');
             $table->string('idArea', 15);
 

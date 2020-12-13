@@ -5,7 +5,7 @@
 
     <div class="spacer-2"></div>
 
-    <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
+    <nav class="navbar navbar-light bg-light text-dark border-width-1 border-primary border-left-only rounded shadow-sm">
       <span class="h3 m-0">Data Cuaca</span>
     </nav>
 
@@ -14,73 +14,65 @@
     <div class="row">
 
       <div class="col-sm-6">
-        <div class="card shadow-sm border-primary border-top-0 border-right-0 border-bottom-0">
+        <div class="card shadow-sm border-width-1 border-info border-left-only">
           <div class="card-body">
-            <table class="table table-sm table-borderless">
-              <thead>
-                <tr>
-                  <th scope="col"><h5 class="card-title">{{ $humidity['@attributes']['description'] }}</h5></th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">
-                    @foreach ($humidity['timerange'] as $hu)
-                      @if (((int)date('H') - (int)$hu['@attributes']['h']) < 6)
-                        <p class="card-text h2">{{ $hu['value'] }}%</p>
-                        @break
-                      @endif
-                    @endforeach
-                  </th>
-                  <td>
-                    Max {{ $maxHumidity }}%
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row"></th>
-                  <td>
-                    Min {{ $minHumidity }}%
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="row">
+              <div class="col-sm-12">
+                <h5 class="card-title h4 user-select-none">{{ $humidity['@attributes']['description'] }}</h5>
+              </div>
+              <div class="col-md-5">
+                @foreach ($humidity['timerange'] as $hu)
+                  @if (((int)date('H') - (int)$hu['@attributes']['h']) < 6)
+                    <span class="btn btn-outline-light h-100 w-100">
+                      <p class="card-text h2 text-center text-dark">{{ $hu['value'] }}%</p>
+                    </span>
+                    @break
+                  @endif
+                @endforeach
+              </div>
+              <div class="col-md-7">
+                <span class="btn btn-outline-danger btn-sm btn-block">
+                  <i class="fas fa-long-arrow-alt-up text-light"></i>
+                  Max {{ $maxHumidity }}%
+                </span>
+                <span class="btn btn-outline-success btn-sm btn-block">
+                  <i class="fas fa-long-arrow-alt-down text-light"></i>
+                  Min {{ $minHumidity }}%
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="col-sm-6">
-        <div class="card shadow-sm border-primary border-top-0 border-right-0 border-bottom-0">
+        <div class="card shadow-sm border-width-1 border-info border-left-only">
           <div class="card-body">
-            <table class="table table-sm table-borderless">
-              <thead>
-                <tr>
-                  <th scope="col"><h5 class="card-title">{{ $temperature['@attributes']['description'] }}</h5></th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">
-                    @foreach ($temperature['timerange'] as $t)
-                      @if (((int)date('H') - (int)$t['@attributes']['h']) < 6)
-                        <p class="card-text h2">{{ $t['value'][0] }}&#176;C</p>
-                        @break
-                      @endif
-                    @endforeach
-                  </th>
-                  <td>
-                    Max {{ $maxTemperature }}&#176;C
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row"></th>
-                  <td>
-                    Min {{ $minTemperature }}&#176;C
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="row">
+              <div class="col-sm-12">
+                <h5 class="card-title h4 user-select-none">{{ $temperature['@attributes']['description'] }}</h5>
+              </div>
+              <div class="col-md-5">
+                @foreach ($temperature['timerange'] as $t)
+                  @if (((int)date('H') - (int)$t['@attributes']['h']) < 6)
+                    <span class="btn btn-outline-light h-100 w-100">
+                      <p class="card-text h2 text-center text-dark">{{ $t['value'][0] }}&#176;C</p>
+                    </span>
+                    @break
+                  @endif
+                @endforeach
+              </div>
+              <div class="col-md-7">
+                <span class="btn btn-outline-danger btn-sm btn-block">
+                  <i class="fas fa-long-arrow-alt-up text-light"></i>
+                  Max {{ $maxTemperature }}&#176;C
+                </span>
+                <span class="btn btn-outline-success btn-sm btn-block">
+                  <i class="fas fa-long-arrow-alt-down text-light"></i>
+                  Min {{ $minTemperature }}&#176;C
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -94,7 +86,7 @@
       <div class="col-sm-6">
         <div class="card shadow-sm">
           <div class="card-body">
-            <h5 class="card-title">{{ $humidity['@attributes']['description'] }}</h5>
+            <h5 class="card-title h4 user-select-none">{{ $humidity['@attributes']['description'] }}</h5>
             <table class="table table-sm table-bordered">
               <thead>
                 <tr>
@@ -107,7 +99,7 @@
                 @foreach ($humidity['timerange'] as $hu)
                   <tr>
                     <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                    <td>{{ date('H:00 - d-m-y', strtotime('+'.$hu['@attributes']['h'].' Hours'))}}</td>
+                    <td>{{ date('H:00 - d-m-y', strtotime('+'.$hu['@attributes']['h'].' Hours', strtotime('00:00:00 today')))}}</td>
                     <td>{{ $hu['value'] }}%</td>
                   </tr>
                 @endforeach
@@ -120,7 +112,7 @@
       <div class="col-sm-6">
         <div class="card shadow-sm">
           <div class="card-body">
-            <h5 class="card-title">{{ $temperature['@attributes']['description'] }}</h5>
+            <h5 class="card-title h4 user-select-none">{{ $temperature['@attributes']['description'] }}</h5>
             <table class="table table-sm table-bordered">
               <thead>
                 <tr>
@@ -133,7 +125,7 @@
                 @foreach ($temperature['timerange'] as $t)
                   <tr>
                     <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                    <td>{{ date('H:00 - d-m-y', strtotime('+'.$t['@attributes']['h'].' Hours'))}}</td>
+                    <td>{{ date('H:00 - d-m-y', strtotime('+'.$t['@attributes']['h'].' Hours', strtotime('00:00:00 today')))}}</td>
                     <td>{{ $t['value'][0] }}&#176;C</td>
                   </tr>
                 @endforeach

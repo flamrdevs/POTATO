@@ -11,10 +11,12 @@ use Session;
 
 // Model
 use App\User;
-use App\SoilMoisture;
-use App\Broadcast;
-use App\Farming;
 use App\Plant;
+use App\Machine;
+use App\Farming;
+use App\SoilMoisture;
+use App\Watering;
+use App\Broadcast;
 use App\Weather;
 
 class FarmerController extends BaseController
@@ -153,6 +155,164 @@ class FarmerController extends BaseController
     public function broadcast_show($id)
     {
         return view('farmer.broadcast.show', ['broadcast' => Broadcast::findOrFail($id)]);
+    }
+
+    // *-----------------------------------------------------------------------
+    // *     FARMING
+    // *-----------------------------------------------------------------------
+
+    // ? GET
+    // VIEW :: farmer.farming.index
+    // halaman data bertani
+    public function farming_index()
+    {
+        $farmings = Farming::withUserPlantMachineFindByUserId(User::auth()->id);
+        return view('farmer.farming.index', compact('farmings'));
+    }
+
+    // ? GET
+    // VIEW :: farmer.farming.soilmoistures
+    // halaman detail bertani bagian kelembaban tanah
+    public function farming_soilmoistures($id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        if ($farming->user['id'] != User::auth()->id) return redirect()->route('farmer.farming');
+        $soilmoistures = SoilMoisture::findByFarmingIdPaginate($id);
+        return view('farmer.farming.soilmoistures', compact('soilmoistures', 'farming'));
+    }
+
+    // ? GET
+    // VIEW :: farmer.farming.waterings
+    // halaman detail bertani bagian penyiraman
+    public function farming_waterings($id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        if ($farming->user['id'] != User::auth()->id) return redirect()->route('farmer.farming');
+        $waterings = Watering::findByFarmingIdPaginate($id);
+        return view('farmer.farming.waterings', compact('waterings', 'farming'));
+    }
+
+    // ? GET
+    // VIEW :: farmer.farming.create
+    // halaman form tambah data bertani
+    public function farming_create()
+    {
+        $farmers = User::farmer();
+        $plants = Plant::all();
+        $machines = Machine::ready();
+        return view('farmer.farming.create', compact('farmers', 'plants', 'machines'));
+    }
+
+    // ? POST
+    // ENDPOINT :: Farming store
+    // api untuk menyimpan data bertani
+    public function farming_store(Request $request)
+    {
+        $validator = $this->validateCreateUpdateFarming($request);
+        if ($validator->fails()) return redirect()->route('farmer.farming.create')->withErrors($validator)->withInput($request->all());
+
+        if ($this->attemptCreateFarming($request)) {
+            Session::flash('success', 'Data success');
+            // success callback - update machine status
+            if (!is_null($request->machine)) {
+                Machine::statusToUsed($request->machine);
+            }
+        } else {
+            Session::flash('failure', 'Data failure');
+        }
+
+        return redirect()->route('farmer.farming');
+    }
+
+    // ? GET
+    // VIEW :: farmer.farming.show
+    // halaman detail bertani
+    public function farming_show($id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        if ($farming->user['id'] != User::auth()->id) return redirect()->route('farmer.farming');
+        return view('farmer.farming.show', compact('farming'));
+    }
+
+    // ? GET
+    // VIEW :: farmer.farming.edit
+    // halaman form ubah data masa bertani
+    public function farming_edit($id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        if ($farming->user['id'] != User::auth()->id) return redirect()->route('farmer.farming');
+        if (!$farming->status) return redirect()->route('farmer.farming.show', ['id' => $farming->id]);
+        $farmers = User::farmer();
+        $plants = Plant::all();
+        $machines = Machine::ready();
+        return view('farmer.farming.edit', compact('farming', 'farmers', 'plants', 'machines'));
+    }
+
+    // ? PUT
+    // ENDPOINT :: Farming update
+    // api untuk update data petani
+    public function farming_update(Request $request, $id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        if ($farming->user['id'] != User::auth()->id) return redirect()->route('farmer.farming');
+
+        if ($request->status) {
+            if ($this->attemptUpdateFarming($request, $farming)) {
+                Session::flash('success','Data berhasil diperbarui');
+                // success callback - update machine status
+                if (!is_null($farming->machine_code)) {
+                    Machine::statusToReady($farming->machine_code);
+                }
+            } else {
+                Session::flash('failure','Data gagal diperbarui');
+            }
+
+            return redirect()->route('farmer.farming');
+        }
+
+        $validator = $this->validateCreateUpdateFarming($request);
+        if ($validator->fails()) return redirect()->route('farmer.farming.edit', ['id' => $farming->id])->withErrors($validator)->withInput($request->all());
+
+        $currentMachineCode = $farming->machine_code;
+
+        if ($this->attemptUpdateFarming($request, $farming)) {
+            Session::flash('success','Data berhasil diperbarui');
+            // success callback - update machine status
+            if (!is_null($request->machine)) {
+                Machine::statusToUsed($request->machine);
+            }
+            if (!is_null($currentMachineCode)) {
+                Machine::statusToReady($currentMachineCode);
+            }
+        } else {
+            Session::flash('failure','Data gagal diperbarui');
+        }
+
+        return redirect()->route('farmer.farming.show', ['id' => $farming->id]);
+    }
+
+    // ? SELF
+    // VALIDATE ? Farming
+    // function validasi data bertani
+    private function validateCreateUpdateFarming($request)
+    {
+        return self::ext_ValidateCreateUpdateFarming($request);
+    }
+
+    // ? SELF
+    // SAVE ? Farming
+    // function tambah data bertani ke database
+    private function attemptCreateFarming($request)
+    {
+        return self::ext_AttemptCreateFarming($request);
+    }
+
+    // ? SELF
+    // SAVE ? Farming
+    // function update data masa bertani ke database
+    private function attemptUpdateFarming($request, $farming)
+    {
+        return self::ext_AttemptUpdateFarming($request, $farming);
     }
 
     // *-----------------------------------------------------------------------

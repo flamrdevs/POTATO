@@ -14,9 +14,10 @@ class CreateSoilMoisturesTable extends Migration
     public function up()
     {
         Schema::create('soil_moistures', function (Blueprint $table) {
-            $table->increments('id');
+            $table->engine = 'InnoDB';
 
-            $table->string('machine_id', 63);
+            $table->increments('id');
+            
             $table->float('value');
 
             $table->timestamp('timestamp')->useCurrent();

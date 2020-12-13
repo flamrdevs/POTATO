@@ -14,12 +14,15 @@ class CreateFarmingsTable extends Migration
     public function up()
     {
         Schema::create('farmings', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+
             $table->increments('id');
 
-            // $table->dateTime('start')->default(new DateTime());
-            // $table->dateTime('end')->nullable();
-            // $table->foreign('machine_id')->references('machine_id')->on('soilmoistures');
-            // $table->foreign('plant_id')->references('id')->on('plants');
+            $table->timestamp('start')->useCurrent();
+            $table->timestamp('end')->nullable();
+
+            $table->boolean('status')->default(true);
+
             $table->timestamps();
         });
     }

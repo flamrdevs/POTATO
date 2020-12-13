@@ -67,6 +67,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], funct
 
                 Route::get('/', 'AdminController@farming_index');
 
+                Route::get('/create', 'AdminController@farming_create')->name('.create');
+                Route::post('/store', 'AdminController@farming_store')->name('.store');
+
+                Route::get('/{id}', 'AdminController@farming_show')->name('.show');
+                Route::get('/{id}/edit', 'AdminController@farming_edit')->name('.edit');
+                Route::get('/{id}/soilmoistures', 'AdminController@farming_soilmoistures')->name('.soilmoistures');
+                Route::get('/{id}/waterings', 'AdminController@farming_waterings')->name('.waterings');
+
+                Route::put('/{id}', 'AdminController@farming_update')->name('.update');
+
             });
         });
 
@@ -81,6 +91,21 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], funct
                 Route::get('/{id}', 'AdminController@plant_show')->name('.show');
                 Route::get('/{id}/edit', 'AdminController@plant_edit')->name('.edit');
                 Route::put('/{id}', 'AdminController@plant_update')->name('.update');
+
+            });
+        });
+
+        ///-----------------------------------------------------------------------------------------------------
+
+        Route::group(['prefix' => 'machine'], function() {
+            Route::name('.machine')->group(function() {
+
+                Route::get('/', 'AdminController@machine_index');
+                Route::get('/create', 'AdminController@machine_create')->name('.create');
+                Route::post('/store', 'AdminController@machine_store')->name('.store');
+                // Route::get('/{id}', 'AdminController@machine_show')->name('.show');
+                // Route::get('/{id}/edit', 'AdminController@machine_edit')->name('.edit');
+                // Route::put('/{id}', 'AdminController@machine_update')->name('.update');
 
             });
         });
@@ -102,14 +127,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], funct
 
         ///-----------------------------------------------------------------------------------------------------
 
-        Route::group(['prefix' => 'soilmoisture'], function() {
-            Route::name('.soilmoisture')->group(function() {
+        // Route::group(['prefix' => 'soilmoisture'], function() {
+        //     Route::name('.soilmoisture')->group(function() {
 
-                Route::get('/', 'AdminController@soilmoisture_index');
-                Route::get('/{id}', 'AdminController@soilmoisture_show')->name('.show');
+        //         Route::get('/', 'AdminController@soilmoisture_index');
+        //         Route::get('/{id}', 'AdminController@soilmoisture_show')->name('.show');
 
-            });
-        });
+        //     });
+        // });
 
         ///-----------------------------------------------------------------------------------------------------
 
@@ -151,6 +176,26 @@ Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], fun
 
         ///-----------------------------------------------------------------------------------------------------
 
+        Route::group(['prefix' => 'farming'], function() {
+            Route::name('.farming')->group(function() {
+
+                Route::get('/', 'FarmerController@farming_index');
+
+                Route::get('/create', 'FarmerController@farming_create')->name('.create');
+                Route::post('/store', 'FarmerController@farming_store')->name('.store');
+
+                Route::get('/{id}', 'FarmerController@farming_show')->name('.show');
+                Route::get('/{id}/edit', 'FarmerController@farming_edit')->name('.edit');
+                Route::get('/{id}/soilmoistures', 'FarmerController@farming_soilmoistures')->name('.soilmoistures');
+                Route::get('/{id}/waterings', 'FarmerController@farming_waterings')->name('.waterings');
+
+                Route::put('/{id}', 'FarmerController@farming_update')->name('.update');
+
+            });
+        });
+
+        ///-----------------------------------------------------------------------------------------------------
+
         Route::group(['prefix' => 'plant'], function() {
             Route::name('.plant')->group(function() {
 
@@ -173,14 +218,14 @@ Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], fun
 
         ///-----------------------------------------------------------------------------------------------------
         
-        Route::group(['prefix' => 'soilmoisture'], function() {
-            Route::name('.soilmoisture')->group(function() {
+        // Route::group(['prefix' => 'soilmoisture'], function() {
+        //     Route::name('.soilmoisture')->group(function() {
 
-                Route::get('/', 'FarmerController@soilmoisture_index');
-                Route::get('/{id}', 'FarmerController@soilmoisture_show')->name('.show');
+        //         Route::get('/', 'FarmerController@soilmoisture_index');
+        //         Route::get('/{id}', 'FarmerController@soilmoisture_show')->name('.show');
 
-            });
-        });
+        //     });
+        // });
 
         ///-----------------------------------------------------------------------------------------------------
 

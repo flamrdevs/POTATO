@@ -12,8 +12,12 @@
         <a class="nav-link {{ Request::is('farmer/farmer*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.farmer') }}">Petani</a>
       </li> --}}
 
-      <li class="nav-item my-1">
+      {{-- <li class="nav-item my-1">
         <a class="nav-link {{ Request::is('farmer/soilmoisture*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.soilmoisture') }}">Kelembaban Tanah</a>
+      </li> --}}
+
+      <li class="nav-item my-1">
+        <a class="nav-link {{ Request::is('farmer/farming*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.farming') }}">Masa Bertani</a>
       </li>
 
       <li class="nav-item my-1">

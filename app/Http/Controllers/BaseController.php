@@ -14,6 +14,7 @@ use App\User;
 use App\Broadcast;
 use App\Farming;
 use App\Plant;
+use App\Machine;
 
 class BaseController extends Controller
 {
@@ -120,23 +121,39 @@ class BaseController extends Controller
     // *     FARMING
     // *-----------------------------------------------------------------------
 
-    // protected static function ext_ValidateCreateFarming($request)
-    // {
-    //     return Validator::make($request->all(), [
-    //         // 'name' => 'required',
-    //         // 'minHumidity' => 'required'
-    //     ], [
-    //         // 'name.required' => 'Pesan tidak boleh kosong',
-    //         // 'minHumidity.required' => 'Data kelembaban minimal tidak boleh kosong'
-    //     ]);
-    // }
+    protected static function ext_ValidateCreateUpdateFarming($request)
+    {
+        return Validator::make($request->all(), [
+            'farmer' => 'required',
+            'plant' => 'required'
+        ], [
+            'farmer.required' => 'Petani tidak boleh kosong',
+            'plant.required' => 'Tanaman tidak boleh kosong'
+        ]);
+    }
 
-    // protected static function ext_AttemptCreateFarming($request)
-    // {
-    //     return Farming::create([
+    protected static function ext_AttemptCreateFarming($request)
+    {
+        return Farming::create([
+            'user_id' => $request->farmer,
+            'plant_id' => $request->plant,
+            'machine_code' => $request->machine
+        ])->save();
+    }
 
-    //     ])->save();
-    // }
+    protected static function ext_AttemptUpdateFarming($request, $farming)
+    {
+        if ($request->status) {
+            $farming->status = false;
+            $farming->end = now();
+            return $farming->save();
+        }
+
+        $farming->user_id = $request->farmer;
+        $farming->plant_id = $request->plant;
+        $farming->machine_code = is_null($request->machine) ? null : $request->machine;
+        return $farming->save();
+    }
 
     // *-----------------------------------------------------------------------
     // *     BROADCAST
@@ -172,12 +189,12 @@ class BaseController extends Controller
     protected static function ext_ValidateCreateUpdatePlant($request)
     {
         return Validator::make($request->all(), [
-            'name' => 'required|max:61',
-            // 'minHumidity' => 'required'
+            'name' => 'required|max:63',
+            'minHumidity' => 'required'
         ], [
             'name.required' => 'Nama tidak boleh kosong',
             'name.max' => 'Nama terlalu panjang',
-            // 'minHumidity.required' => 'Data kelembaban minimal tidak boleh kosong'
+            'minHumidity.required' => 'Data kelembaban minimal tidak boleh kosong'
         ]);
     }
 
@@ -185,13 +202,35 @@ class BaseController extends Controller
     {
         return Plant::create([
             'name' => $request->name,
-            'minHumidity' => 20.0
+            'minHumidity' => $request->minHumidity
         ])->save();
     }
 
     protected static function ext_AttemptUpdatePlant($request, $plant)
     {
         $plant->name = $request->name;
+        $plant->minHumidity = $request->minHumidity;
         return $plant->save();
+    }
+
+    // *-----------------------------------------------------------------------
+    // *     MACHINE
+    // *-----------------------------------------------------------------------
+
+    protected static function ext_ValidateCreateUpdateMachine($request)
+    {
+        return Validator::make($request->all(), [
+            'code' => 'required|max:63',
+        ], [
+            'code.required' => 'Kode tidak boleh kosong',
+            'code.max' => 'Kode terlalu panjang'
+        ]);
+    }
+
+    protected static function ext_AttemptCreateMachine($request)
+    {
+        return Machine::create([
+            'code' => $request->code
+        ])->save();
     }
 }

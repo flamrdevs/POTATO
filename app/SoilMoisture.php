@@ -10,6 +10,16 @@ class SoilMoisture extends Model
 
     protected $fillable = [
         'machine_id',
-        'value'
+        'value',
+        'farming_id'
     ];
+
+    // * ------------------------------------------------
+    // *    Methods
+    // * ------------------------------------------------
+    
+    public static function findByFarmingIdPaginate($id, $paginate = 10)
+    {
+        return self::where('farming_id', $id)->orderBy('timestamp', 'DESC')->paginate($paginate);
+    }
 }

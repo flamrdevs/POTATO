@@ -24,7 +24,8 @@ class User extends Authenticatable
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     // * ------------------------------------------------
@@ -37,13 +38,15 @@ class User extends Authenticatable
         return self::findOrFail(Auth::user()->id);
     }
 
-    // Dapatkan User dengan role farmer dengan parameter paginate
-    public static function farmer($paginate = false)
+    // Dapatkan User dengan role farmer
+    public static function farmer()
     {
-        if (is_int($paginate)) {
-            return self::where('role','farmer')->paginate($paginate);
-        } else {
-            return self::where('role','farmer')->get();
-        }
+        return self::where('role','farmer')->get();
+    }
+
+    // Dapatkan User dengan role farmer dengan pagination
+    public static function farmerPaginate($paginate = 10)
+    {
+        return self::where('role','farmer')->paginate($paginate);
     }
 }

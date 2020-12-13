@@ -14,6 +14,8 @@ class CreatePlantsTable extends Migration
     public function up()
     {
         Schema::create('plants', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+
             $table->increments('id');
             
             $table->string('name', 63);

@@ -5,7 +5,7 @@
     
     <div class="spacer-2"></div>
 
-    <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
+    <nav class="navbar navbar-light bg-light text-dark border-width-1 border-primary border-left-only rounded shadow-sm">
       <span class="h3 m-0">Data Tanaman</span>
     </nav>
 
@@ -29,13 +29,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($plants as $farmer)
+                  @foreach ($plants as $plant)
                     <tr>
                       <th scope="row" class="text-center">{{ $loop->iteration}}</th>
-                      <td>{{ $farmer->name }}</td>
+                      <td>{{ $plant->name }}</td>
                       <td>
                         <div class="d-flex justify-content-center">
-                        <a class="btn btn-outline-info btn-sm" href="{{ route('admin.plant.show',['id' => $farmer->id]) }}" role="button">Detail</a>
+                        <a class="btn btn-outline-info btn-sm" href="{{ route('admin.plant.show',['id' => $plant->id]) }}" role="button">Detail</a>
                         </div>
                       </td>
                     </tr>

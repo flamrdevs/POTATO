@@ -11,10 +11,12 @@ use Session;
 
 // Model
 use App\User;
-use App\SoilMoisture;
-use App\Broadcast;
-use App\Farming;
 use App\Plant;
+use App\Machine;
+use App\Farming;
+use App\SoilMoisture;
+use App\Watering;
+use App\Broadcast;
 use App\Weather;
 
 class AdminController extends BaseController
@@ -196,7 +198,7 @@ class AdminController extends BaseController
         $broadcast = Broadcast::findOrFail($id);
 
         $validator = $this->validateCreateUpdateBroadcast($request);
-        if ($validator->fails()) return redirect()->route('admin.broadcast.edit', ['id' => $id])->withErrors($validator)->withInput($request->all());
+        if ($validator->fails()) return redirect()->route('admin.broadcast.edit', ['id' => $broadcast->id])->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptUpdateBroadcast($request, $broadcast)) {
             Session::flash('success','Data berhasil diperbarui');
@@ -252,8 +254,28 @@ class AdminController extends BaseController
     // halaman data bertani
     public function farming_index()
     {
-        // $farmings = Farming::all();
-        return view('admin.farming.index');
+        $farmings = Farming::withUserPlantMachine();
+        return view('admin.farming.index', compact('farmings'));
+    }
+
+    // ? GET
+    // VIEW :: admin.farming.soilmoistures
+    // halaman detail bertani bagian kelembaban tanah
+    public function farming_soilmoistures($id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        $soilmoistures = SoilMoisture::findByFarmingIdPaginate($id);
+        return view('admin.farming.soilmoistures', compact('soilmoistures', 'farming'));
+    }
+
+    // ? GET
+    // VIEW :: admin.farming.waterings
+    // halaman detail bertani bagian penyiraman
+    public function farming_waterings($id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        $waterings = Watering::findByFarmingIdPaginate($id);
+        return view('admin.farming.waterings', compact('waterings', 'farming'));
     }
 
     // ? GET
@@ -261,7 +283,10 @@ class AdminController extends BaseController
     // halaman form tambah data bertani
     public function farming_create()
     {
-        return view('admin.farming.create');
+        $farmers = User::farmer();
+        $plants = Plant::all();
+        $machines = Machine::ready();
+        return view('admin.farming.create', compact('farmers', 'plants', 'machines'));
     }
 
     // ? POST
@@ -269,24 +294,92 @@ class AdminController extends BaseController
     // api untuk menyimpan data bertani
     public function farming_store(Request $request)
     {
-        $validator = $this->validateCreateFarming($request);
-        if ($validator->fails()) return redirect()->route('admin.farming.index')->withErrors($validator)->withInput($request->all());
+        $validator = $this->validateCreateUpdateFarming($request);
+        if ($validator->fails()) return redirect()->route('admin.farming.create')->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptCreateFarming($request)) {
             Session::flash('success', 'Data success');
+            // success callback - update machine status
+            if (!is_null($request->machine)) {
+                Machine::statusToUsed($request->machine);
+            }
         } else {
             Session::flash('failure', 'Data failure');
         }
 
-        return redirect()->route('admin.broadcast');
+        return redirect()->route('admin.farming');
+    }
+
+    // ? GET
+    // VIEW :: admin.farming.show
+    // halaman detail bertani
+    public function farming_show($id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        return view('admin.farming.show', compact('farming'));
+    }
+
+    // ? GET
+    // VIEW :: admin.farming.edit
+    // halaman form ubah data masa bertani
+    public function farming_edit($id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+        if (!$farming->status) return redirect()->route('admin.farming.show', ['id' => $farming->id]);
+        $farmers = User::farmer();
+        $plants = Plant::all();
+        $machines = Machine::ready();
+        return view('admin.farming.edit', compact('farming', 'farmers', 'plants', 'machines'));
+    }
+
+    // ? PUT
+    // ENDPOINT :: Farming update
+    // api untuk update data petani
+    public function farming_update(Request $request, $id)
+    {
+        $farming = Farming::withUserPlantMachineFind($id);
+
+        if ($request->status) {
+            if ($this->attemptUpdateFarming($request, $farming)) {
+                Session::flash('success','Data berhasil diperbarui');
+                // success callback - update machine status
+                if (!is_null($farming->machine_code)) {
+                    Machine::statusToReady($farming->machine_code);
+                }
+            } else {
+                Session::flash('failure','Data gagal diperbarui');
+            }
+
+            return redirect()->route('admin.farming');
+        }
+
+        $validator = $this->validateCreateUpdateFarming($request);
+        if ($validator->fails()) return redirect()->route('admin.farming.edit', ['id' => $farming->id])->withErrors($validator)->withInput($request->all());
+
+        $currentMachineCode = $farming->machine_code;
+
+        if ($this->attemptUpdateFarming($request, $farming)) {
+            Session::flash('success','Data berhasil diperbarui');
+            // success callback - update machine status
+            if (!is_null($request->machine)) {
+                Machine::statusToUsed($request->machine);
+            }
+            if (!is_null($currentMachineCode)) {
+                Machine::statusToReady($currentMachineCode);
+            }
+        } else {
+            Session::flash('failure','Data gagal diperbarui');
+        }
+
+        return redirect()->route('admin.farming.show', ['id' => $farming->id]);
     }
 
     // ? SELF
     // VALIDATE ? Farming
     // function validasi data bertani
-    private function validateCreateFarming($request)
+    private function validateCreateUpdateFarming($request)
     {
-        return self::ext_ValidateCreateFarming($request);
+        return self::ext_ValidateCreateUpdateFarming($request);
     }
 
     // ? SELF
@@ -295,6 +388,14 @@ class AdminController extends BaseController
     private function attemptCreateFarming($request)
     {
         return self::ext_AttemptCreateFarming($request);
+    }
+
+    // ? SELF
+    // SAVE ? Farming
+    // function update data masa bertani ke database
+    private function attemptUpdateFarming($request, $farming)
+    {
+        return self::ext_AttemptUpdateFarming($request, $farming);
     }
 
     // *-----------------------------------------------------------------------
@@ -358,7 +459,7 @@ class AdminController extends BaseController
         $plant = Plant::findOrFail($id);
 
         $validator = $this->validateCreateUpdatePlant($request);
-        if ($validator->fails()) return redirect()->route('admin.plant.edit', ['id' => $id])->withErrors($validator)->withInput($request->all());
+        if ($validator->fails()) return redirect()->route('admin.plant.edit', ['id' => $plant->id])->withErrors($validator)->withInput($request->all());
 
         if ($this->attemptUpdatePlant($request, $plant)) {
             Session::flash('success','Data berhasil diperbarui');
@@ -366,7 +467,7 @@ class AdminController extends BaseController
             Session::flash('failure','Data gagal diperbarui');
         }
 
-        return redirect()->route('admin.plant');
+        return redirect()->route('admin.plant.show', ['id' => $plant->id]);
     }
 
     // ? SELF
@@ -394,6 +495,59 @@ class AdminController extends BaseController
     }
 
     // *-----------------------------------------------------------------------
+    // *     MACHINE
+    // *-----------------------------------------------------------------------
+
+    // ? GET
+    // VIEW :: admin.machine.index
+    // halaman data mesin
+    public function machine_index()
+    {
+        return view('admin.machine.index', ['machines' => Machine::with(['farming'])->orderBy('created_at', 'DESC')->paginate(10)]);
+    }
+
+    // ? GET
+    // VIEW :: admin.machine.create
+    // halaman form tambah data mesin
+    public function machine_create()
+    {
+        return view('admin.machine.create');
+    }
+
+    // ? POST
+    // ENDPOINT :: machine store
+    // api untuk menyimpan data mesin
+    public function machine_store(Request $request)
+    {
+        $validator = $this->validateCreateUpdateMachine($request);
+        if ($validator->fails()) return redirect()->route('admin.machine.create')->withErrors($validator)->withInput($request->all());
+
+        if ($this->attemptCreateMachine($request)) {
+            Session::flash('success', 'Data success');
+        } else {
+            Session::flash('failure', 'Data failure');
+        }
+
+        return redirect()->route('admin.machine');
+    }
+
+    // ? SELF
+    // VALIDATE ? Machine
+    // function validasi data mesin
+    private function validateCreateUpdateMachine($request)
+    {
+        return self::ext_ValidateCreateUpdateMachine($request);
+    }
+
+    // ? SELF
+    // SAVE ? Machine
+    // function tambah data mesin ke database
+    private function attemptCreateMachine($request)
+    {
+        return self::ext_AttemptCreateMachine($request);
+    }
+
+    // *-----------------------------------------------------------------------
     // *     FARMER
     // *-----------------------------------------------------------------------
 
@@ -402,7 +556,7 @@ class AdminController extends BaseController
     // halaman data petani
     public function farmer_index()
     {
-        return view('admin.farmer.index', ['farmers' => User::farmer(10)]);
+        return view('admin.farmer.index', ['farmers' => User::farmerPaginate()]);
     }
 
     // ? GET

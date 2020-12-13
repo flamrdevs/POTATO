@@ -14,10 +14,9 @@ class CreateWateringsTable extends Migration
     public function up()
     {
         Schema::create('waterings', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+
             $table->increments('id');
-            
-            $table->integer('farming_id')->unsigned();
-            $table->foreign('farming_id')->references('id')->on('farmings');
 
             $table->timestamp('start')->useCurrent();
             $table->timestamp('end')->nullable();

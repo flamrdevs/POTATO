@@ -5,7 +5,7 @@
     
     <div class="spacer-2"></div>
 
-    <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
+    <nav class="navbar navbar-light bg-light text-dark border-width-1 border-primary border-left-only rounded shadow-sm">
       <span class="h3 m-0">Buat Data Tanaman Baru</span>
     </nav>
 
@@ -27,6 +27,16 @@
                 @if ($errors->has('name'))
                   <div id="nameFeedback" class="invalid-feedback">
                     <strong>{{ $errors->first('name') }}</strong>
+                  </div>
+                @endif
+              </div>
+
+              <div class="form-group">
+                <label for="minHumidity">Kelembaban minimal</label>
+                <input type="number" class="form-control {{$errors->has('minHumidity') ? 'is-invalid' : ''}}" id="minHumidity" name="minHumidity" value="{{ old('minHumidity') }}" aria-describedby="minHumidityFeedback" autofocus>
+                @if ($errors->has('minHumidity'))
+                  <div id="minHumidityFeedback" class="invalid-feedback">
+                    <strong>{{ $errors->first('minHumidity') }}</strong>
                   </div>
                 @endif
               </div>

@@ -17,7 +17,7 @@ class CreateBroadcastsTable extends Migration
             $table->increments('id');
             
             $table->string('message', 511);
-            $table->boolean('deleted')->default(false);
+            // $table->boolean('deleted')->default(false);
 
             $table->timestamps();
         });

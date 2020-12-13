@@ -5,7 +5,7 @@
     
     <div class="spacer-2"></div>
 
-    <nav class="navbar navbar-light bg-light rounded text-dark shadow-sm">
+    <nav class="navbar navbar-light bg-light text-dark border-width-1 border-primary border-left-only rounded shadow-sm">
       <span class="h3 m-0">Data Tanaman</span>
     </nav>
 
@@ -22,6 +22,11 @@
             <div class="form-group">
               <label for="name">Nama</label>
               <input type="text" class="form-control" id="name" name="name" value="{{ $plant->name }}" disabled>
+            </div>
+
+            <div class="form-group">
+              <label for="minHumidity">Kelembaban minimal</label>
+              <input type="number" class="form-control" id="minHumidity" name="minHumidity" value="{{ $plant->minHumidity }}" disabled>
             </div>
     
           </div>
