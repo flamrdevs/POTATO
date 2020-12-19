@@ -27,7 +27,7 @@ Route::post('login', 'AuthController@login');
 Route::post('logout', 'AuthController@logout')->name('logout');
 
 // Admin Route
-Route::group(['prefix' => 'admin', 'middleware' => ['auth'/*,'role:admin'*/]], function() {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], function() {
     Route::name('admin')->group(function() {
         ///-----------------------------------------------------------------------------------------------------
 
@@ -145,7 +145,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth'/*,'role:admin'*/]], f
 });
 
 // Farmer Route
-Route::group(['prefix' => 'farmer', 'middleware' => ['auth'/*,'role:farmer'*/]], function() {
+Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], function() {
     Route::name('farmer')->group(function() {
         ///-----------------------------------------------------------------------------------------------------
 
