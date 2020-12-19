@@ -199,15 +199,8 @@ void putWateringAPI() {
   Serial.println("-------------------------------------------------------------\n");
 }
 
-// SETUP
-void setup() {
-  Serial.begin(BaudRate);
-  WiFiConnect();
-  postSetupAPI();
-}
-
-// LOOP
-void loop() {
+// CORE (PRODUCTION)
+void core() {
   delay(getEvery);
   minute = minute + getEvery;
 
@@ -230,4 +223,16 @@ void loop() {
     minute = 0;
     postSoilMoistureAPI(value);
   }
+}
+
+// SETUP
+void setup() {
+  Serial.begin(BaudRate);
+  WiFiConnect();
+  postSetupAPI();
+}
+
+// LOOP
+void loop() {
+  core();
 }
