@@ -27,7 +27,7 @@ Route::post('login', 'AuthController@login');
 Route::post('logout', 'AuthController@logout')->name('logout');
 
 // Admin Route
-Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], function() {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth'/*,'role:admin'*/]], function() {
     Route::name('admin')->group(function() {
         ///-----------------------------------------------------------------------------------------------------
 
@@ -145,7 +145,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','role:admin']], funct
 });
 
 // Farmer Route
-Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], function() {
+Route::group(['prefix' => 'farmer', 'middleware' => ['auth'/*,'role:farmer'*/]], function() {
     Route::name('farmer')->group(function() {
         ///-----------------------------------------------------------------------------------------------------
 
@@ -238,7 +238,11 @@ Route::group(['prefix' => 'farmer', 'middleware' => ['auth','role:farmer']], fun
 // API Route
 Route::group(['prefix' => 'api'], function() {
 
-    Route::post('/soilmoisture', 'APIController@post');
+    Route::post('/setup', 'APIController@machine_setup');
+
+    Route::post('/soilmoisture', 'APIController@soilmoisture_store');
+    Route::post('/watering', 'APIController@watering_store');
+    Route::put('/watering/{id}', 'APIController@watering_update');
 
 });
 

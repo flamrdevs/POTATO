@@ -1,11 +1,39 @@
-GET http://www.potato.test/api/soilmoisture
+# GET http://www.potato.test/api/test
 
 ##
 
+# Setup Machine
+# POST http://www.potato.test/api/setup
+# Content-Type: application/json
+
+# {
+#   "apiKey": "mc.potato.app",
+#   "code": "mcodeA2"
+# }
+
+# Create Soil Moisture
 # POST http://www.potato.test/api/soilmoisture
 # Content-Type: application/json
 
 # {
-#   "data": "10",
-#   "machineID": "1A"
+#   "apiKey": "mc.potato.app",
+#   "value": 40.5,
+#   "farming_id": 2
+# }
+
+# Create Watering
+# POST http://www.potato.test/api/watering
+# Content-Type: application/json
+
+# {
+#   "apiKey": "mc.potato.app",
+#   "farming_id": 2
+# }
+
+# Update Watering
+# PUT http://www.potato.test/api/watering/7
+# Content-Type: application/json
+
+# {
+#   "apiKey": "mc.potato.app"
 # }

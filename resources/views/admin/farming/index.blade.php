@@ -32,10 +32,10 @@
             </div>
 
             @foreach ($farmings as $farming)
-              <div class="card my-3 mx-3 shadow-sm {{ $farming->status ? 'showFarming' : 'hideFarming' }}">
+              <div class="card my-3 mx-3 shadow border-width-1 border-info border-left-only {{ $farming->status ? 'showFarming' : 'hideFarming' }}">
                 <div class="card-body">
 
-                  <table class="table">
+                  <table class="table farming-table">
                     <tbody>
                       <tr>
                         <td>Petani</td>
@@ -79,7 +79,23 @@
 
         <div class="card shadow-sm">
           <div class="card-body">
-            <a class="btn btn-primary btn-sm" href="{{ route('admin.farming.create') }}" role="button">Tambah</a>
+            <div class="d-flex align-items-center justify-content-center flex-column">
+              <div id="chart"></div>
+              <h2 class="h4">
+                Total <span id="totalMachine"></span>
+              </h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="spacer-1"></div>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <a class="btn btn-primary btn-sm" href="{{ route('admin.farming.create') }}" role="button">
+              <i class="fa fa-plus"></i>
+              Tambah
+            </a>
           </div>
         </div>
 
@@ -93,21 +109,28 @@
 @section('script')
   <script>
     (function() {
+      var status = @json($status);
+
+      document.querySelector('#totalMachine').innerHTML = status.doing + status.done;
+
       $('#show').on('change', function() {
         switch (this.value) {
           case 'allFarming':
             $('.showFarming').show();
             $('.hideFarming').show();
+            document.querySelector('#totalMachine').innerHTML = status.doing + status.done;
             break;
         
           case 'showFarming':
             $('.showFarming').show();
             $('.hideFarming').hide();
+            document.querySelector('#totalMachine').innerHTML = status.doing;
             break;
 
           case 'hideFarming':
             $('.showFarming').hide();
             $('.hideFarming').show();
+            document.querySelector('#totalMachine').innerHTML = status.done;
             break;
         
           default:

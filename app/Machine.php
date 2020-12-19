@@ -26,10 +26,16 @@ class Machine extends Model
         return $this->hasOne('App\Farming');
     }
 
-    // Dapatkan Machine dengan status available
+    // Dapatkan Machine dengan status ready
     public static function ready()
     {
         return self::where('status', 'ready')->get();
+    }
+
+    // Dapatkan Machine dengan status used
+    public static function used()
+    {
+        return self::where('status', 'used')->get();
     }
 
     // Perbarui status Machine menjadi ready

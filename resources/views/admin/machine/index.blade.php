@@ -1,5 +1,9 @@
 @extends('admin.layout')
 
+@section('head')
+  <link rel="stylesheet" href="{{ asset('css/apexcharts.css') }}">
+@endsection
+
 @section('main')
   <div class="container">
     
@@ -20,7 +24,7 @@
             @include('components.flashession')
     
             <div class="table-responsive">
-              <table class="table table-hover table-bordered">
+              <table class="table table-hover table-bordered machine-table">
                 <thead class="thead-light">
                   <tr>
                     <th scope="col" class="text-center">#</th>
@@ -61,7 +65,23 @@
 
         <div class="card shadow-sm">
           <div class="card-body">
-            <a class="btn btn-primary btn-sm" href="{{ route('admin.machine.create') }}" role="button">Tambah</a>
+            <div class="d-flex align-items-center justify-content-center flex-column">
+              <div id="chart"></div>
+              <h2 class="h4">
+                Total <span id="totalMachine"></span>
+              </h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="spacer-1"></div>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <a class="btn btn-primary btn-sm" href="{{ route('admin.machine.create') }}" role="button">
+              <i class="fa fa-plus"></i>
+              Tambah
+            </a>
           </div>
         </div>
 
@@ -70,4 +90,43 @@
     </div>
 
   </div>
+@endsection
+
+@section('script')
+  <script src="{{ asset('js/apexcharts.min.js') }}"></script>
+  <script>
+    (function () {
+      var status = @json($status);
+
+      document.querySelector('#totalMachine').innerHTML = status.used + status.ready;
+
+      var options = {
+        series: [status.used, status.ready],
+        labels: ['digunakan', 'tersedia'],
+        colors: ['#1cc88a', '#e74a3b'],
+        chart: {
+          type: 'donut',
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        legend: {
+          show: false
+        },
+        plotOptions: {
+          pie: {
+            donut: {
+              labels: {
+                show: false,
+              }
+            }
+          }
+        }
+      };
+
+      var chart = new ApexCharts(document.querySelector("#chart"), options);
+      chart.render();
+    })();
+  </script>
+
 @endsection

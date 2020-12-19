@@ -6,17 +6,28 @@
 
 @section('body')
   <nav class="navbar navbar-dark bg-primary sticky-top flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="{{ route(Auth::user()->role == 'admin' ? 'admin' : 'farmer') }}">{{ config('app.name') }}</a>
+    <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="{{ route(Auth::user()->role == 'admin' ? 'admin' : 'farmer') }}">
+      {{ config('app.name') }}
+    </a>
+
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="btn-group mx-3">
       <button type="button" class="btn btn-outline-light btn-sm dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-user"></i>
         {{ Auth::user()->name }}
       </button>
       <div class="dropdown-menu dropdown-menu-left dropdown-menu-lg-right">
-        <a class="dropdown-item" type="button" href="{{ route(Auth::user()->role == 'admin' ? 'admin.profile' : 'farmer.profile') }}">Profil</a>
-        <a role="button" class="dropdown-item" data-toggle="modal" data-target="#logoutModal">Logout</a>
+        <a class="dropdown-item" type="button" href="{{ route(Auth::user()->role == 'admin' ? 'admin.profile' : 'farmer.profile') }}">
+          <i class="fa fa-user-cog"></i>
+          Profil
+        </a>
+        <a role="button" class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
+          <i class="fa fa-sign-out-alt"></i>
+          Logout
+        </a>
       </div>
     </div>
   </nav>

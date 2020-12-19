@@ -66,3 +66,23 @@
   border-right-width: 0 !important;
   border-bottom-width: 0 !important;
 }
+
+.farming-table > tbody td:nth-child(1) {
+  width: 50px;
+}
+
+.farming-table > tbody td:nth-child(2) {
+  width: 20px;
+}
+
+.farmer-table > tbody th {
+  width: 50px;
+}
+
+.plant-table > tbody th {
+  width: 50px;
+}
+
+.machine-table > tbody th {
+  width: 50px;
+}

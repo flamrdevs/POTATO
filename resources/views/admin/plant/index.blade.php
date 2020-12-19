@@ -20,11 +20,12 @@
             @include('components.flashession')
     
             <div class="table-responsive">
-              <table class="table table-hover table-bordered">
+              <table class="table table-hover table-bordered plant-table">
                 <thead class="thead-light">
                   <tr>
                     <th scope="col" class="text-center">#</th>
                     <th scope="col" class="text-center">Nama</th>
+                    <th scope="col" class="text-center">Kelembaban Minimal</th>
                     <th scope="col" class="text-center">Aksi</th>
                   </tr>
                 </thead>
@@ -33,6 +34,7 @@
                     <tr>
                       <th scope="row" class="text-center">{{ $loop->iteration}}</th>
                       <td>{{ $plant->name }}</td>
+                      <td>{{ $plant->minHumidity }}%</td>
                       <td>
                         <div class="d-flex justify-content-center">
                         <a class="btn btn-outline-info btn-sm" href="{{ route('admin.plant.show',['id' => $plant->id]) }}" role="button">Detail</a>
@@ -59,7 +61,23 @@
 
         <div class="card shadow-sm">
           <div class="card-body">
-            <a class="btn btn-primary btn-sm" href="{{ route('admin.plant.create') }}" role="button">Tambah</a>
+            <div class="d-flex align-items-center justify-content-center flex-column">
+              <div id="chart"></div>
+              <h2 class="h4">
+                Total {{ $total }}
+              </h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="spacer-1"></div>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <a class="btn btn-primary btn-sm" href="{{ route('admin.plant.create') }}" role="button">
+              <i class="fa fa-plus"></i>
+              Tambah
+            </a>
           </div>
         </div>
 

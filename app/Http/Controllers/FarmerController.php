@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 // Framework
+use Illuminate\Support\Carbon;
 use Validator;
 use Hash;
 use Session;
@@ -35,7 +36,28 @@ class FarmerController extends BaseController
     // halaman home petani
     public function index()
     {
-        return view('farmer.index');
+        $farmings = Farming::activeWithUserPlantMachineFindByUserId(User::auth()->id);
+        $farmingsId = $farmings->map(function($val) {
+            return $val->id;
+        });
+        $count = [
+            'farming' => [
+                'berlangsung' => Farming::statusTrueFindByUserId(User::auth()->id)->count(),
+                'selesai' => Farming::statusFalseFindByUserId(User::auth()->id)->count()
+            ]
+        ];
+
+        $weather = Weather::area('501289');
+        if (is_null($weather)) return redirect()->route('admin');
+
+        $average = [
+            'today' => [
+                'soilMoisture' => SoilMoisture::whereDate('timestamp', Carbon::today())->whereIn('farming_id', $farmingsId)->avg('value'),
+                'whumidity' => collect(Weather::getHumidityFrom($weather)['timerange'])->whereIn('@attributes.h', ['0','6','12','18'])->map(function($val) { return (float)$val['value']; })->avg(),
+                'wtemperature' => collect(Weather::getTemperatureFrom($weather)['timerange'])->whereIn('@attributes.h', ['0','6','12','18'])->map(function($val) { return (float)$val['value'][0]; })->avg()
+            ]
+        ];
+        return view('farmer.index', compact('count', 'farmings', 'average'));
     }
 
     // ? GET
@@ -231,7 +253,11 @@ class FarmerController extends BaseController
     {
         $farming = Farming::withUserPlantMachineFind($id);
         if ($farming->user['id'] != User::auth()->id) return redirect()->route('farmer.farming');
-        return view('farmer.farming.show', compact('farming'));
+        $today = [
+            'soilmoisture' => SoilMoisture::whereDate('timestamp', Carbon::today())->where('farming_id', $farming->id)->get(),
+            'watering' => Watering::whereDate('start', Carbon::today())->where('farming_id', $farming->id)->get()
+        ];
+        return view('farmer.farming.show', compact('farming', 'today'));
     }
 
     // ? GET

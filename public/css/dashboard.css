@@ -33,8 +33,8 @@
 .navbar-brand {
   padding-top: .75rem;
   padding-bottom: .75rem;
-  /* background-color: rgba(0, 0, 0, .25); */
-  /* box-shadow: inset -2px 0 3px rgba(0, 0, 0, .1); */
+  background-color: rgba(0, 0, 0, .1);
+  box-shadow: inset -2px 0 3px rgba(0, 0, 0, .1);
 }
 
 .navbar .navbar-toggler {

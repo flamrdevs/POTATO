@@ -20,7 +20,7 @@
             @include('components.flashession')
     
             @foreach ($broadcasts as $broadcast)
-              <div class="card my-3 mx-3 shadow-sm">
+              <div class="card my-3 mx-3 shadow border-width-1 border-info border-left-only">
                 <div class="card-body">
                   <p class="card-text text-wrap text-truncate">
                     {{ str_limit($broadcast->message, 150) }}

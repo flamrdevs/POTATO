@@ -33,7 +33,10 @@
       <div class="col-lg-3">
         <div class="card shadow-sm">
           <div class="card-body">
-            <a class="btn btn-sm btn-primary" href="{{ route('admin.broadcast.edit',['id' => $broadcast->id]) }}" role="button">Edit</a>
+            <a class="btn btn-sm btn-primary" href="{{ route('admin.broadcast.edit',['id' => $broadcast->id]) }}" role="button">
+              <i class="fa fa-edit"></i>
+              Edit
+            </a>
           </div>
           <div class="card-footer bg-light">
             <a class="btn btn-sm btn-secondary" href="{{ route('admin.broadcast') }}" >Kembali</a>

@@ -20,14 +20,14 @@
             @include('components.flashession')
     
             @foreach ($broadcasts as $broadcast)
-              <div class="card my-3 mx-3 shadow-sm">
+              <div class="card my-3 mx-3 shadow border-width-1 border-info border-left-only">
                 <div class="card-body">
                   <p class="card-text text-wrap text-truncate">
                     {{ str_limit($broadcast->message, 150) }}
                   </p>
                   <p class="card-text float-right">{{ $broadcast->created_at }}</p>
                   <a class="btn btn-sm btn-link" href="{{ route('admin.broadcast.show',['id' => $broadcast->id]) }}" role="button">Detail</a>
-                  <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.broadcast.edit',['id' => $broadcast->id]) }}" role="button">Edit</a>
+                  <a class="btn btn-sm btn-link" href="{{ route('admin.broadcast.edit',['id' => $broadcast->id]) }}" role="button">Edit</a>
                 </div>
               </div>
             @endforeach
@@ -46,9 +46,10 @@
       <div class="col-lg-3">
         <div class="card">
           <div class="card-body">
-
-            <a class="btn btn-primary btn-sm" href="{{ route('admin.broadcast.create') }}" role="button">Siaran baru</a>
-            
+            <a class="btn btn-primary btn-sm" href="{{ route('admin.broadcast.create') }}" role="button">
+              <i class="fa fa-plus"></i>
+              Siaran baru
+            </a>
           </div>
         </div>
       </div>

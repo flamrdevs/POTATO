@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 // Framework
+use Illuminate\Support\Carbon;
 use Validator;
 use Hash;
 use Session;
@@ -35,7 +36,36 @@ class AdminController extends BaseController
     // halaman home admin
     public function index()
     {
-        return view('admin.index');
+        $farmings = Farming::activeWithUserPlantMachine();
+        $farmerIdWhoWork = $farmings->map(function($farming) {
+            return $farming->user_id;
+        })->unique()->values();
+        $count = [
+            'farming' => [
+                'berlangsung' => Farming::statusTrue()->count(),
+                'selesai' => Farming::statusFalse()->count()
+            ],
+            'machine' => [
+                'digunakan' => Machine::used()->count(),
+                'tersedia' => Machine::ready()->count()
+            ],
+            'farmer' => [
+                'bekerja' => $farmerIdWhoWork->count(),
+                'tidakbekerja' => User::whereNotIn('id', $farmerIdWhoWork)->count()
+            ]
+        ];
+
+        $weather = Weather::area('501289');
+        if (is_null($weather)) return redirect()->route('admin');
+
+        $average = [
+            'today' => [
+                'soilMoisture' => SoilMoisture::whereDate('timestamp', Carbon::today())->avg('value'),
+                'whumidity' => collect(Weather::getHumidityFrom($weather)['timerange'])->whereIn('@attributes.h', ['0','6','12','18'])->map(function($val) { return (float)$val['value']; })->avg(),
+                'wtemperature' => collect(Weather::getTemperatureFrom($weather)['timerange'])->whereIn('@attributes.h', ['0','6','12','18'])->map(function($val) { return (float)$val['value'][0]; })->avg()
+            ]
+        ];
+        return view('admin.index', compact('count', 'farmings', 'average'));
     }
 
     // ? GET
@@ -255,7 +285,11 @@ class AdminController extends BaseController
     public function farming_index()
     {
         $farmings = Farming::withUserPlantMachine();
-        return view('admin.farming.index', compact('farmings'));
+        $status = [
+            'doing' => Farming::where('status', 1)->count(),
+            'done' => Farming::where('status', 0)->count()
+        ];
+        return view('admin.farming.index', compact('farmings', 'status'));
     }
 
     // ? GET
@@ -316,7 +350,11 @@ class AdminController extends BaseController
     public function farming_show($id)
     {
         $farming = Farming::withUserPlantMachineFind($id);
-        return view('admin.farming.show', compact('farming'));
+        $today = [
+            'soilmoisture' => SoilMoisture::whereDate('timestamp', Carbon::today())->where('farming_id', $farming->id)->get(),
+            'watering' => Watering::whereDate('start', Carbon::today())->where('farming_id', $farming->id)->get()
+        ];
+        return view('admin.farming.show', compact('farming', 'today'));
     }
 
     // ? GET
@@ -407,7 +445,9 @@ class AdminController extends BaseController
     // halaman data tanaman
     public function plant_index()
     {
-        return view('admin.plant.index', ['plants' => Plant::paginate(10)]);
+        $plants = Plant::paginate(10);
+        $total = Plant::count();
+        return view('admin.plant.index', compact('plants', 'total'));
     }
 
     // ? GET
@@ -503,7 +543,12 @@ class AdminController extends BaseController
     // halaman data mesin
     public function machine_index()
     {
-        return view('admin.machine.index', ['machines' => Machine::with(['farming'])->orderBy('created_at', 'DESC')->paginate(10)]);
+        $machines = Machine::with(['farming'])->orderBy('created_at', 'DESC')->paginate(10);
+        $status = [
+            'used' => Machine::used()->count(),
+            'ready' => Machine::ready()->count()
+        ];
+        return view('admin.machine.index', compact('machines', 'status'));
     }
 
     // ? GET
@@ -556,7 +601,9 @@ class AdminController extends BaseController
     // halaman data petani
     public function farmer_index()
     {
-        return view('admin.farmer.index', ['farmers' => User::farmerPaginate()]);
+        $farmers = User::farmerPaginate();
+        $total = User::farmer()->count();
+        return view('admin.farmer.index', compact('farmers', 'total'));
     }
 
     // ? GET

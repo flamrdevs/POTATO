@@ -5,7 +5,10 @@
     <ul class="nav nav-pills flex-column">
 
       <li class="nav-item my-1">
-        <a class="nav-link {{ Request::is('farmer') || Request::is('farmer/profile*') ? 'active' : 'text-dark' }}" href="{{ route('farmer') }}">Beranda</a>
+        <a class="nav-link {{ Request::is('farmer') || Request::is('farmer/profile*') ? 'active' : 'text-dark' }}" href="{{ route('farmer') }}">
+          <i class="fa fa-home"></i>
+          Beranda
+        </a>
       </li>
 
       {{-- <li class="nav-item my-1">
@@ -17,19 +20,31 @@
       </li> --}}
 
       <li class="nav-item my-1">
-        <a class="nav-link {{ Request::is('farmer/farming*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.farming') }}">Masa Bertani</a>
+        <a class="nav-link {{ Request::is('farmer/farming*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.farming') }}">
+          <i class="fa fa-business-time"></i>
+          Masa Bertani
+        </a>
       </li>
 
       <li class="nav-item my-1">
-        <a class="nav-link {{ Request::is('farmer/plant*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.plant') }}">Tanaman</a>
+        <a class="nav-link {{ Request::is('farmer/plant*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.plant') }}">
+          <i class="fa fa-leaf"></i>
+          Tanaman
+        </a>
       </li>
 
       <li class="nav-item my-1">
-        <a class="nav-link {{ Request::is('farmer/weather*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.weather') }}">Cuaca</a>
+        <a class="nav-link {{ Request::is('farmer/weather*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.weather') }}">
+          <i class="fa fa-cloud"></i>
+          Cuaca
+        </a>
       </li>
 
       <li class="nav-item my-1">
-        <a class="nav-link {{ Request::is('farmer/broadcast*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.broadcast') }}">Siaran</a>
+        <a class="nav-link {{ Request::is('farmer/broadcast*') ? 'active' : 'text-dark' }}" href="{{ route('farmer.broadcast') }}">
+          <i class="fa fa-broadcast-tower"></i>
+          Siaran
+        </a>
       </li>
       
     </ul>

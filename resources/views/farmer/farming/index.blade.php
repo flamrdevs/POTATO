@@ -32,10 +32,10 @@
             </div>
 
             @foreach ($farmings as $farming)
-              <div class="card my-3 mx-3 shadow-sm {{ $farming->status ? 'showFarming' : 'hideFarming' }}">
+              <div class="card my-3 mx-3 shadow border-width-1 border-info border-left-only {{ $farming->status ? 'showFarming' : 'hideFarming' }}">
                 <div class="card-body">
 
-                  <table class="table">
+                  <table class="table farming-table">
                     <tbody>
                       <tr>
                         <td>Petani</td>
@@ -79,7 +79,10 @@
 
         <div class="card shadow-sm">
           <div class="card-body">
-            <a class="btn btn-primary btn-sm" href="{{ route('farmer.farming.create') }}" role="button">Tambah</a>
+            <a class="btn btn-primary btn-sm" href="{{ route('farmer.farming.create') }}" role="button">
+              <i class="fa fa-plus"></i>
+              Tambah
+            </a>
           </div>
         </div>
 

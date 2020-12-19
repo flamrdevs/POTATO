@@ -42,7 +42,10 @@
 
         <div class="card shadow-sm">
           <div class="card-body">
-            <a class="btn btn-sm btn-primary" role="button" onclick="event.preventDefault(); document.getElementById('create-form').submit();">Simpan</a>
+            <a class="btn btn-sm btn-primary" role="button" onclick="event.preventDefault(); document.getElementById('create-form').submit();">
+              <i class="fa fa-save"></i>
+              Simpan
+            </a>
           </div>
           <div class="card-footer bg-light">
             <a class="btn btn-sm btn-secondary" href="{{ route('admin.broadcast') }}" >Batal</a>

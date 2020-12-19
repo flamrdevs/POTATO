@@ -20,22 +20,24 @@
             @include('components.flashession')
     
             <div class="table-responsive">
-              <table class="table table-hover table-bordered">
+              <table class="table table-hover table-bordered plant-table">
                 <thead class="thead-light">
                   <tr>
                     <th scope="col" class="text-center">#</th>
                     <th scope="col" class="text-center">Nama</th>
+                    <th scope="col" class="text-center">Kelembaban Minimal</th>
                     <th scope="col" class="text-center">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($plants as $farmer)
+                  @foreach ($plants as $plant)
                     <tr>
                       <th scope="row" class="text-center">{{ $loop->iteration}}</th>
-                      <td>{{ $farmer->name }}</td>
+                      <td>{{ $plant->name }}</td>
+                      <td>{{ $plant->minHumidity }}%</td>
                       <td>
                         <div class="d-flex justify-content-center">
-                        <a class="btn btn-outline-info btn-sm" href="{{ route('farmer.plant.show',['id' => $farmer->id]) }}" role="button">Detail</a>
+                        <a class="btn btn-outline-info btn-sm" href="{{ route('farmer.plant.show',['id' => $plant->id]) }}" role="button">Detail</a>
                         </div>
                       </td>
                     </tr>
