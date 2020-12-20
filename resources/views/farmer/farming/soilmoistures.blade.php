@@ -52,7 +52,7 @@
       <div class="col-lg-3">
         <div class="card shadow-sm">
           <div class="card-footer bg-light">
-            <a class="btn btn-sm btn-secondary" href="{{ route('admin.farming') }}" >Kembali</a>
+            <a class="btn btn-sm btn-secondary" href="{{ route('farmer.farming') }}" >Kembali</a>
           </div>
         </div>
       </div>

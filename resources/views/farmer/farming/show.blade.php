@@ -74,7 +74,7 @@
                   <div class="card-body">
                     <div id="soilMoisturesTodayChart"></div>
                     <div>
-                      <a class="btn btn-outline-primary btn-sm float-right" href="{{ route('admin.farming.soilmoistures', ['id' => $farming->id]) }}" role="button">Detail Kelembaban Tanah</a>
+                      <a class="btn btn-outline-primary btn-sm float-right" href="{{ route('farmer.farming.soilmoistures', ['id' => $farming->id]) }}" role="button">Detail Kelembaban Tanah</a>
                     </div>
                   </div>
                 </div>
@@ -83,7 +83,7 @@
                   <div class="card-body">
                     <div id="wateringsTodayChart"></div>
                     <div>
-                      <a class="btn btn-outline-primary btn-sm float-right" href="{{ route('admin.farming.waterings', ['id' => $farming->id]) }}" role="button">Detail Penyiraman Otomatis</a>
+                      <a class="btn btn-outline-primary btn-sm float-right" href="{{ route('farmer.farming.waterings', ['id' => $farming->id]) }}" role="button">Detail Penyiraman Otomatis</a>
                     </div>
                   </div>
                 </div>
